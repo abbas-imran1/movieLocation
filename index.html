@@ -65,8 +65,7 @@
             }
             }).then(response => response.json())
                 .then(data => {
-                    console.log(data.access_token);
-                    getAddress('property', addr, zip, data.access_token);
+                    console.log(data);
                 }
                 ).catch(e => console.log(e))
         }   
