@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>      
+        <form id="pocForm" style="text-align: center" action="/upload" enctype="multipart/form-data" method="post">
+        <h2>POC - Movie Report </h2><br/>
+            <label for="streetAddress">Street Address</label>
+          <input type="text" id="streetAddress" name="streetAddress" /><br/><br/>      
+          <label for="zip">Zip Code</label>
+          <input type="text" id="zip" name="zip" /><br/><br/>
+          <button type="submit">Submit</button><br/><br/>
+          <img hidden id="spinner" src="https://res.cloudinary.com/dflulaosf/image/upload/v1630314537/assets/spinner_zispi9.gif" />
+        </form>
+        <div id="message" style="text-align: center; color: red;"></div>
+</body>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+<script>
+        const url = 'https://api-prod.corelogic.com/';
+        const form = document.getElementById('pocForm');
+        form.addEventListener("submit", function (event) {
+            // stop form submission
+            event.preventDefault();
+            const addr = document.getElementById('streetAddress').value;
+            const zip = document.getElementById('zip').value;
+            if (addr == '') {
+                document.getElementById('message').innerHTML = "Please select a Street Address first";
+                return;
+            } else if (zip == '') {
+                document.getElementById('message').innerHTML = "Please select a Zip code to proceed further";
+                return;
+            } else {
+                document.getElementById('message').innerHTML = "";
+                const spinner = document.getElementById("spinner");
+                spinner.removeAttribute('hidden');
+                console.log('called');
+                fetch('https://api-prod.corelogic.com/oauth/token?grant_type=client_credentials', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': 'Basic ' + btoa('leyEeAcNCR40HPlUuutmIlZCQvnGdVbW:feqb3O10WzGoLEqk')
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data.access_token);
+                    getAddress('property', addr, zip, data.access_token);
+                }
+                );;
+            }        
+        }); 
+        function getAddress(endPoint, address, zip, token) {
+            console.log('called')
+            fetch("https://api-prod.corelogic.com/property?address=20 Pacifica&zip5=92618", {
+            method: 'GET',
+            headers: {
+                'Access-Control-Allow-Origin':'*',
+                'Access-Control-Allow-Methods': "GET, POST, PUT, DELETE, OPTIONS",
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': "application/vnd.corelogic.v1+json"
+            }
+            }).then(response => response.json())
+                .then(data => {
+                    console.log(data.access_token);
+                    getAddress('property', addr, zip, data.access_token);
+                }
+                ).catch(e => console.log(e))
+        }   
+</script>
+</html>
