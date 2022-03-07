@@ -4,11 +4,11 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>POC - Core Logic API</title>
 </head>
 <body>      
         <form id="pocForm" style="text-align: center" action="/upload" enctype="multipart/form-data" method="post">
-        <h2>POC - Movie Report </h2><br/>
+        <h2>POC - Core Logic API </h2><br/>
             <label for="streetAddress">Street Address</label>
           <input type="text" id="streetAddress" name="streetAddress" /><br/><br/>      
           <label for="zip">Zip Code</label>
@@ -16,7 +16,8 @@
           <button type="submit">Submit</button><br/><br/>
           <img hidden id="spinner" src="https://res.cloudinary.com/dflulaosf/image/upload/v1630314537/assets/spinner_zispi9.gif" />
         </form>
-        <div id="message" style="text-align: center; color: red;"></div>
+        <div id="example" style="text-align: center;">Example:- 5300 WHITESBORO CT , 27540</div>
+        <div id="message" style="text-align: center; color: red; margin-top: 10px; font-weight: bold;"></div>
 </body>
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
@@ -29,13 +30,14 @@
             const addr = document.getElementById('streetAddress').value;
             const zip = document.getElementById('zip').value;
             if (addr == '') {
-                document.getElementById('message').innerHTML = "Please select a Street Address first";
+                document.getElementById('message').innerHTML = "Please enter Street Address first";
                 return;
             } else if (zip == '') {
-                document.getElementById('message').innerHTML = "Please select a Zip code to proceed further";
+                document.getElementById('message').innerHTML = "Please enter a Zip code to proceed further";
                 return;
             } else {
                 document.getElementById('message').innerHTML = "";
+                document.getElementById('example').innerHTML = "";
                 const spinner = document.getElementById("spinner");
                 spinner.removeAttribute('hidden');
                 console.log('called');
@@ -47,27 +49,32 @@
                 })
                 .then(response => response.json())
                 .then(data => {
-                    console.log(data.access_token);
                     getAddress('property', addr, zip, data.access_token);
                 }
                 );;
             }        
         }); 
         function getAddress(endPoint, address, zip, token) {
-            console.log('called')
-            fetch("https://api-prod.corelogic.com/property?address=20 Pacifica&zip5=92618", {
+            fetch("https://api-prod.corelogic.com/property?address=20%20Pacifica&zip5=92618", {
             method: 'GET',
             headers: {
                 'Access-Control-Allow-Origin':'*',
-                'Access-Control-Allow-Methods': "GET, PUT, POST, DELETE, OPTIONS",
                 'Authorization': `Bearer ${token}`,
                 'Content-Type': "application/vnd.corelogic.v1+json"
             }
             }).then(response => response.json())
                 .then(data => {
                     console.log(data);
+                    document.getElementById('message').innerHTML = data;
+                    const spinner = document.getElementById("spinner");
+                    spinner.hidden = true;
                 }
-                ).catch(e => console.log(e))
+                ).catch(e => {
+                    console.log(e)
+                    document.getElementById('message').innerHTML = `Error in api call - https://api-prod.corelogic.com/property - ${e}`;
+                    const spinner = document.getElementById("spinner");
+                    spinner.hidden = true;
+                })
         }   
 </script>
 </html>
