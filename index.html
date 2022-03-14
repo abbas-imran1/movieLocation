@@ -18,6 +18,12 @@
         </form>
         <div id="example" style="text-align: center;">Example:- 5300 WHITESBORO CT , 27540</div>
         <div id="message" style="text-align: center; color: red; margin-top: 10px; font-weight: bold;"></div>
+        <div style="text-align: center;">
+            <div id="apn"></div>
+            <div id="city"></div>
+            <div id="lat"></div>
+            <div id="lng"></div>
+        </div>
 </body>
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
@@ -53,41 +59,22 @@
                         'Access-Control-Allow-Origin':'*'
                     }, 
                     body: JSON.stringify(data)
-                    // headers: {
-                    //     'Authorization': 'Basic ' + btoa('leyEeAcNCR40HPlUuutmIlZCQvnGdVbW:feqb3O10WzGoLEqk')
-                    // }
                 })
                 .then(response => response.json())
                 .then(data => {
-                    console.log(data);
-                    // getAddress('property', addr, zip, data.access_token);
-                }
-                ).catch(e => {
-                    console.log(e)
-                })
-            }        
-        }); 
-        function getAddress(endPoint, address, zip, token) {
-            fetch(`https://api-prod.corelogic.com/property?address=${address}&zip5=${zip}`, {
-            method: 'GET',
-            headers: {
-                'Access-Control-Allow-Origin':'*',
-                'Authorization': `Bearer ${token}`,
-                'Content-Type': "application/vnd.corelogic.v1+json"
-            }
-            }).then(response => response.json())
-                .then(data => {
-                    console.log(data);
-                    document.getElementById('message').innerHTML = data;
                     const spinner = document.getElementById("spinner");
                     spinner.hidden = true;
+                    const apiData = data['data'][0]
+                    document.getElementById('apn').innerHTML = `Apn:  ${apiData.apn}`
+                    document.getElementById('city').innerHTML = `City:  ${apiData.city}`
+                    document.getElementById('lat').innerHTML = `Latitude:  ${apiData.latitude}`
+                    document.getElementById('lng').innerHTML = `Longitude:  ${apiData.longitude}`
                 }
                 ).catch(e => {
-                    console.log(e)
-                    document.getElementById('message').innerHTML = `Error in api call - https://api-prod.corelogic.com/property - ${e}`;
-                    const spinner = document.getElementById("spinner");
-                    spinner.hidden = true;
+                    console.log(e);
+                    document.getElementById('message').innerHTML = e;
                 })
-        }   
+        }
+        });   
 </script>
 </html>
