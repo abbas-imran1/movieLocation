@@ -40,22 +40,35 @@
                 document.getElementById('example').innerHTML = "";
                 const spinner = document.getElementById("spinner");
                 spinner.removeAttribute('hidden');
+                const address = document.getElementById('streetAddress').value;
+                const zip = document.getElementById('zip').value;
                 console.log('called');
-                fetch('https://api-prod.corelogic.com/oauth/token?grant_type=client_credentials', {
+                const data = {
+                    address: address,
+                    zip: zip
+                }
+                fetch(`https://secureapimanagement.azure-api.net/coreLoginApi/GetData`, {
                     method: 'POST',
                     headers: {
-                        'Authorization': 'Basic ' + btoa('leyEeAcNCR40HPlUuutmIlZCQvnGdVbW:feqb3O10WzGoLEqk')
-                    }
+                        'Access-Control-Allow-Origin':'*'
+                    }, 
+                    body: JSON.stringify(data)
+                    // headers: {
+                    //     'Authorization': 'Basic ' + btoa('leyEeAcNCR40HPlUuutmIlZCQvnGdVbW:feqb3O10WzGoLEqk')
+                    // }
                 })
                 .then(response => response.json())
                 .then(data => {
-                    getAddress('property', addr, zip, data.access_token);
+                    console.log(data);
+                    // getAddress('property', addr, zip, data.access_token);
                 }
-                );;
+                ).catch(e => {
+                    console.log(e)
+                })
             }        
         }); 
         function getAddress(endPoint, address, zip, token) {
-            fetch("https://api-prod.corelogic.com/property?address=20%20Pacifica&zip5=92618", {
+            fetch(`https://api-prod.corelogic.com/property?address=${address}&zip5=${zip}`, {
             method: 'GET',
             headers: {
                 'Access-Control-Allow-Origin':'*',
