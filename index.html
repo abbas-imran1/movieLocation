@@ -6,7 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>POC - Core Logic API</title>
 </head>
-<body>      
+<body>  
+        <!-- 28060 Sea Lane Dr Malibu, CA 90265 -->
         <form id="pocForm" style="text-align: center" action="/upload" enctype="multipart/form-data" method="post">
         <h2>POC - Core Logic API </h2><br/>
             <label for="streetAddress">Street Address</label>
@@ -19,10 +20,30 @@
         <div id="example" style="text-align: center;">Example:- 5300 WHITESBORO CT , 27540</div>
         <div id="message" style="text-align: center; color: red; margin-top: 10px; font-weight: bold;"></div>
         <div style="text-align: center;">
-            <div id="apn"></div>
-            <div id="city"></div>
-            <div id="lat"></div>
-            <div id="lng"></div>
+            <table hidden id="dataTable" border="1" 
+            cellspacing="25" style="margin-left: auto; margin-right: auto; width: -webkit-fill-available;">
+                <tr>
+                    <td id="clip"></td>
+                    <td id="city"></td>
+                    <td id="lat"></td>
+                    <td id="lng"></td>
+                </tr>
+                <tr>
+                    <td id="yearBuilt"></td>
+                    <td id="totalFurArea"></td>
+                    <td id="numStories"></td>
+                    <td id="fireplace"></td>
+                </tr>
+                <tr>
+                    <td id="exteriorWallFin"></td>
+                    <td id="foundationType"></td>
+                    <td id="roofCover"></td>
+                    <td id="heatingSystem"></td>
+                </tr>
+            </table>
+            <div style="text-align: center; margin-top: 20px;">
+                <button hidden id="maps">Search Location on Google Map</button>
+            </div>
         </div>
 </body>
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
@@ -39,13 +60,17 @@
                 document.getElementById('message').innerHTML = "Please enter Street Address first";
                 return;
             } else if (zip == '') {
-                document.getElementById('message').innerHTML = "Please enter a Zip code to proceed further";
+                document.getElementById('message').innerHTML = "Please enter Zip code to proceed further";
                 return;
             } else {
                 document.getElementById('message').innerHTML = "";
                 document.getElementById('example').innerHTML = "";
                 const spinner = document.getElementById("spinner");
                 spinner.removeAttribute('hidden');
+                const maps = document.getElementById("maps");
+                maps.hidden = true;
+                const dataTable = document.getElementById("dataTable");
+                dataTable.hidden = true;
                 const address = document.getElementById('streetAddress').value;
                 const zip = document.getElementById('zip').value;
                 console.log('called');
@@ -53,7 +78,7 @@
                     address: address,
                     zip: zip
                 }
-                fetch(`https://secureapimanagement.azure-api.net/coreLoginApi/GetData`, {
+                fetch(`https://secureapimanagement.azure-api.net/coreLoginApi/GetDataByClip`, {
                     method: 'POST',
                     headers: {
                         'Access-Control-Allow-Origin':'*'
@@ -64,11 +89,30 @@
                 .then(data => {
                     const spinner = document.getElementById("spinner");
                     spinner.hidden = true;
-                    const apiData = data['data'][0]
-                    document.getElementById('apn').innerHTML = `Apn:  ${apiData.apn}`
-                    document.getElementById('city').innerHTML = `City:  ${apiData.city}`
-                    document.getElementById('lat').innerHTML = `Latitude:  ${apiData.latitude}`
-                    document.getElementById('lng').innerHTML = `Longitude:  ${apiData.longitude}`
+                    if (data.errorCode != 429) {
+                        const tab = document.getElementById("dataTable");
+                        tab.removeAttribute('hidden');
+                        const maps = document.getElementById("maps");
+                        maps.removeAttribute('hidden');
+                        maps.addEventListener('click', () => {
+                            window.open(`https://maps.google.com/?q=${data.siteLocation.data.coordinatesParcel.lat},${data.siteLocation.data.coordinatesParcel.lng}`, '_blank')
+                        })
+                        // console.log(data)
+                        document.getElementById('city').innerHTML = `City:  ${data.ownership.data.currentOwnerMailingInfo.mailingAddress.city}`
+                        document.getElementById('lat').innerHTML = `Latitude:  ${data.siteLocation.data.coordinatesParcel.lat}`
+                        document.getElementById('lng').innerHTML = `Longitude:  ${data.siteLocation.data.coordinatesParcel.lng}`
+                        document.getElementById('yearBuilt').innerHTML = `Year Built:  ${data.buildings.data.buildings[0].constructionDetails.effectiveYearBuilt}`
+                        document.getElementById('totalFurArea').innerHTML = `Total Furnished Square Feet:  ${data.buildings.data.allBuildingsSummary.livingAreaSquareFeet} Sq.ft`
+                        document.getElementById('clip').innerHTML = `Clip:  ${data.buildings.data.clip}`
+                        document.getElementById('fireplace').innerHTML = `Fireplace:  ${data.buildings.data.buildings[0].structureFeatures.firePlaces.typeCode}`
+                        document.getElementById('exteriorWallFin').innerHTML = `Exterior wall finish:  ${data.buildings.data.buildings[0].structureExterior.walls.typeCode}`
+                        document.getElementById('foundationType').innerHTML = `Foundation Type:  ${data.buildings.data.buildings[0].constructionDetails.foundationTypeCode}`
+                        document.getElementById('roofCover').innerHTML = `Roof Cover:  ${data.buildings.data.buildings[0].structureExterior.roof.coverTypeCode}`
+                        document.getElementById('heatingSystem').innerHTML = `Heating system:  ${data.buildings.data.buildings[0].structureFeatures.heating.typeCode}`
+                        document.getElementById('numStories').innerHTML = `Number of stories:  ${data.buildings.data.buildings[0].structureVerticalProfile.storiesCount}`
+                    } else {
+                        document.getElementById('message').innerHTML = data.description;
+                    }
                 }
                 ).catch(e => {
                     console.log(e);
