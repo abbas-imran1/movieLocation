@@ -21,22 +21,28 @@
         <div id="message" style="text-align: center; color: red; margin-top: 10px; font-weight: bold;"></div>
         <div style="text-align: center;">
             <table hidden id="dataTable" border="1" 
-            cellspacing="25" style="margin-left: auto; margin-right: auto; width: -webkit-fill-available;">
+            cellspacing="20" style="margin-left: auto; margin-right: auto; width: 50%;">
                 <tr>
                     <td id="clip"></td>
                     <td id="city"></td>
+                </tr>
+                <tr>
+                    <td id="yearBuilt"></td>
+                    <td id="exteriorWallFin"></td>
+                </tr>
+                <tr>
                     <td id="lat"></td>
                     <td id="lng"></td>
                 </tr>
                 <tr>
-                    <td id="yearBuilt"></td>
-                    <td id="totalFurArea"></td>
                     <td id="numStories"></td>
                     <td id="fireplace"></td>
                 </tr>
                 <tr>
-                    <td id="exteriorWallFin"></td>
                     <td id="foundationType"></td>
+                    <td id="totalFurArea"></td>
+                </tr>
+                <tr>
                     <td id="roofCover"></td>
                     <td id="heatingSystem"></td>
                 </tr>
@@ -51,6 +57,3041 @@
 <script>
         const url = 'https://api-prod.corelogic.com/';
         const form = document.getElementById('pocForm');
+        const mapping = {
+   "ASMPTN:": {
+      "FIELD2": "Assumption"
+   },
+   "BALLOON:": {
+      "FIELD2": "Balloon"
+   },
+   "CASH:": {
+      "FIELD2": "Cash"
+   },
+   "CNST:": {
+      "FIELD2": "Construction Loan"
+   },
+   "CNV:": {
+      "FIELD2": "Conventional"
+   },
+   "DMND:": {
+      "FIELD2": "Demand"
+   },
+   "FHA:": {
+      "FIELD2": "Federal Housing Administration"
+   },
+   "GRAD:": {
+      "FIELD2": "Graduated Payment Mortgage"
+   },
+   "GROWEQ:": {
+      "FIELD2": "Growing Equity"
+   },
+   "LHM:": {
+      "FIELD2": "Lease Hold Mortgage"
+   },
+   "PP:": {
+      "FIELD2": "Private Party"
+   },
+   "REFI:": {
+      "FIELD2": "Refinance"
+   },
+   "REFI/EQ:": {
+      "FIELD2": "Refinance or Equity Line of Credit"
+   },
+   "REVOLV:": {
+      "FIELD2": "Credit Line (Revolving) Home Equity Line of Credit"
+   },
+   "SBA:": {
+      "FIELD2": "Small Business Administration"
+   },
+   "UNKN:": {
+      "FIELD2": "Conventional or Unknown"
+   },
+   "VA:": {
+      "FIELD2": "Veterans Administration"
+   },
+   "WRP:": {
+      "FIELD2": "Wrap-Around Mortgage"
+   },
+   "AVG:": {
+      "FIELD2": "Average"
+   },
+   "BEST:": {
+      "FIELD2": "Best"
+   },
+   "BETTER:": {
+      "FIELD2": "Better"
+   },
+   "EXC:": {
+      "FIELD2": "Excellent"
+   },
+   "FAIR:": {
+      "FIELD2": "Fair"
+   },
+   "GOOD:": {
+      "FIELD2": "Good"
+   },
+   "INFERIOR:": {
+      "FIELD2": "Inferior"
+   },
+   "NONE:": {
+      "FIELD2": "None"
+   },
+   "OBSTRCTD:": {
+      "FIELD2": "Obstructed"
+   },
+   "POOR:": {
+      "FIELD2": "Poor"
+   },
+   "PREMIUM:": {
+      "FIELD2": "Premium"
+   },
+   "STANDARD:": {
+      "FIELD2": "Standard"
+   },
+   "SUPERIOR:": {
+      "FIELD2": "Superior"
+   },
+   "TYPICAL:": {
+      "FIELD2": "Typical"
+   },
+   "AIRPORT:": {
+      "FIELD2": "Airport"
+   },
+   "BAY:": {
+      "FIELD2": "Bay"
+   },
+   "BLUFF:": {
+      "FIELD2": "Bluff"
+   },
+   "CANAL:": {
+      "FIELD2": "Canal"
+   },
+   "CANYON:": {
+      "FIELD2": "Canyon"
+   },
+   "CITY:": {
+      "FIELD2": "City"
+   },
+   "CREEK:": {
+      "FIELD2": "Creek"
+   },
+   "GOLFCRS:": {
+      "FIELD2": "Golf Course"
+   },
+   "GULF:": {
+      "FIELD2": "Gulf"
+   },
+   "HILLS:": {
+      "FIELD2": "Hills"
+   },
+   "LAGOON:": {
+      "FIELD2": "Lagoon"
+   },
+   "LAKE:": {
+      "FIELD2": "Lake"
+   },
+   "MTN:": {
+      "FIELD2": "Mountain"
+   },
+   "OCEAN:": {
+      "FIELD2": "Ocean"
+   },
+   "PKG:": {
+      "FIELD2": "Parking"
+   },
+   "POND:": {
+      "FIELD2": "Pond"
+   },
+   "POOL:": {
+      "FIELD2": "Pool"
+   },
+   "RIVER:": {
+      "FIELD2": "River"
+   },
+   "TERRITORL:": {
+      "FIELD2": "Territorial"
+   },
+   "STREET:": {
+      "FIELD2": "Street"
+   },
+   "WATER:": {
+      "FIELD2": "Water"
+   },
+   "WDLND:": {
+      "FIELD2": "WoodLand"
+   },
+   "ACE:": {
+      "FIELD2": "AC Central"
+   },
+   "ACW:": {
+      "FIELD2": "AC Central & Unit"
+   },
+   "ACP:": {
+      "FIELD2": "AC Central Partial"
+   },
+   "ACH:": {
+      "FIELD2": "Chilled Water"
+   },
+   "ACA:": {
+      "FIELD2": "AC Commercial A/C"
+   },
+   "ADU:": {
+      "FIELD2": "AC Dual Unit"
+   },
+   "AEV:": {
+      "FIELD2": "AC Evaporative"
+   },
+   "8:": {
+      "FIELD2": "AC Evaporative/Wall"
+   },
+   "11:": {
+      "FIELD2": "AC Evaporative/Window"
+   },
+   "AFA:": {
+      "FIELD2": "AC Fan Cooling"
+   },
+   "AHT:": {
+      "FIELD2": "AC Heat Pump"
+   },
+   "AOF:": {
+      "FIELD2": "AC Office Only"
+   },
+   "APK:": {
+      "FIELD2": "AC Package"
+   },
+   "APR:": {
+      "FIELD2": "AC Package Roof"
+   },
+   "APT:": {
+      "FIELD2": "AC Partial"
+   },
+   "12:": {
+      "FIELD2": "AC Present, Type Unknown"
+   },
+   "APF:": {
+      "FIELD2": "AC Refrigeration"
+   },
+   "APV:": {
+      "FIELD2": "AC Refrigeration/Evaporation"
+   },
+   "7:": {
+      "FIELD2": "AC Refrigeration/Wall"
+   },
+   "ASE:": {
+      "FIELD2": "AC Seperate System"
+   },
+   "ASO:": {
+      "FIELD2": "AC Solar"
+   },
+   "ASP:": {
+      "FIELD2": "AC Split System"
+   },
+   "AWA:": {
+      "FIELD2": "AC Wall Unit"
+   },
+   "AWN:": {
+      "FIELD2": "AC Wall/Window Unit"
+   },
+   "AWI:": {
+      "FIELD2": "AC Window Unit"
+   },
+   "Z:": {
+      "FIELD2": "All Other Use Codes"
+   },
+   "CAC or COM:": {
+      "FIELD2": "Commercial A/C"
+   },
+   "CAC:": {
+      "FIELD2": "Commercial A/C"
+   },
+   "COM:": {
+      "FIELD2": "Commercial A/C"
+   },
+   "CEN:": {
+      "FIELD2": "Central"
+   },
+   "CHW or CHLL:": {
+      "FIELD2": "Chilled Water"
+   },
+   "CHW:": {
+      "FIELD2": "Chilled Water"
+   },
+   "CHLL:": {
+      "FIELD2": "Chilled Water"
+   },
+   "CPR:": {
+      "FIELD2": "Central Partial"
+   },
+   "CWU:": {
+      "FIELD2": "Central & Unit"
+   },
+   "DUL:": {
+      "FIELD2": "Dual Unit"
+   },
+   "EVP or EVAP:": {
+      "FIELD2": "Evaporative"
+   },
+   "EVAP:": {
+      "FIELD2": "Evaporative"
+   },
+   "EVP:": {
+      "FIELD2": "Evaporative"
+   },
+   "FAN:": {
+      "FIELD2": "Fan Cooling"
+   },
+   "FRCD:": {
+      "FIELD2": "Forced Air"
+   },
+   "HTP or HTPMP:": {
+      "FIELD2": "Heat Pump"
+   },
+   "HTP:": {
+      "FIELD2": "Heat Pump"
+   },
+   "HTPMP:": {
+      "FIELD2": "Heat Pump"
+   },
+   "MULT:": {
+      "FIELD2": "Multiple Types"
+   },
+   "000 or NONE:": {
+      "FIELD2": "None"
+   },
+   "000:": {
+      "FIELD2": "None"
+   },
+   "NONE:": {
+      "FIELD2": "None"
+   },
+   "OFC:": {
+      "FIELD2": "Office Only"
+   },
+   "OTHER:": {
+      "FIELD2": "Other"
+   },
+   "PRT:": {
+      "FIELD2": "Partial"
+   },
+   "PKG:": {
+      "FIELD2": "Package"
+   },
+   "PKR:": {
+      "FIELD2": "Package Roof"
+   },
+   "REF:": {
+      "FIELD2": "Refrigeration"
+   },
+   "REV:": {
+      "FIELD2": "Refrigeration/Evaporat"
+   },
+   "SEP:": {
+      "FIELD2": "Separate System"
+   },
+   "SOL:": {
+      "FIELD2": "Solar"
+   },
+   "SPLT or SPL:": {
+      "FIELD2": "Split System"
+   },
+   "SPL:": {
+      "FIELD2": "Split System"
+   },
+   "SPLT:": {
+      "FIELD2": "Split System"
+   },
+   "WAU:": {
+      "FIELD2": "Wall Unit"
+   },
+   "WNU:": {
+      "FIELD2": "Wall/Window Unit"
+   },
+   "YES:": {
+      "FIELD2": "Yes"
+   },
+   "ZONED:": {
+      "FIELD2": "Zoned"
+   },
+   "EARTHQUAKE:": {
+      "FIELD2": "Earthquake"
+   },
+   "FIRE:": {
+      "FIELD2": "Fire"
+   },
+   "FLOOD:": {
+      "FIELD2": "Flood, Severe Storm"
+   },
+   "FLOODMUDSLIDES:": {
+      "FIELD2": "Flood, Severe Storm, Mudslides"
+   },
+   "FLOODWINTER:": {
+      "FIELD2": "Flood, Severe Winter Storm"
+   },
+   "HURRICANE:": {
+      "FIELD2": "Hurricane"
+   },
+   "TORNADO:": {
+      "FIELD2": "Tornado"
+   },
+   "TORNADOSTORM:": {
+      "FIELD2": "Severe Storm, Tornadoes"
+   },
+   "TORNADOSTORMFLD:": {
+      "FIELD2": "Severe Storm, Tornadoes, Flooding"
+   },
+   "TROPICALSTORM:": {
+      "FIELD2": "Tropical Storm"
+   },
+   "BBO or BSBRD:": {
+      "FIELD2": "Baseboard"
+   },
+   "BSBRD:": {
+      "FIELD2": "Baseboard"
+   },
+   "BBO:": {
+      "FIELD2": "Baseboard"
+   },
+   "BBP:": {
+      "FIELD2": "Baseboard Coal/Wood"
+   },
+   "BBE:": {
+      "FIELD2": "Baseboard Electric"
+   },
+   "BTE:": {
+      "FIELD2": "Baseboard Electric/Hot Water"
+   },
+   "BRE:": {
+      "FIELD2": "Baseboard Electric/Radiant"
+   },
+   "BBG:": {
+      "FIELD2": "Baseboard Gas"
+   },
+   "BH0:": {
+      "FIELD2": "Baseboard Hot Water"
+   },
+   "BS0:": {
+      "FIELD2": "Baseboard Hot Water/Steam"
+   },
+   "BBO:": {
+      "FIELD2": "Baseboard Oil"
+   },
+   "FC0:": {
+      "FIELD2": "Ceiling Furnace"
+   },
+   "CL0 or CEN:": {
+      "FIELD2": "Central"
+   },
+   "CL0:": {
+      "FIELD2": "Central"
+   },
+   "CEN:": {
+      "FIELD2": "Central"
+   },
+   "CLE:": {
+      "FIELD2": "Central Electric"
+   },
+   "CF0:": {
+      "FIELD2": "Central Forced Air"
+   },
+   "CFO:": {
+      "FIELD2": "Central Forced Air Oil"
+   },
+   "CLG:": {
+      "FIELD2": "Central Gas"
+   },
+   "CPO:": {
+      "FIELD2": "Central Partial"
+   },
+   "CV0 or CONVECTN": {
+      "FIELD2": "Convection"
+   },
+   "CV0": {
+      "FIELD2": "Convection"
+   },
+   "CONVECTN": {
+      "FIELD2": "Convection"
+   },
+   "00C or COAL:": {
+      "FIELD2": "Coal"
+   },
+   "00C:": {
+      "FIELD2": "Coal"
+   },
+   "COAL:": {
+      "FIELD2": "Coal"
+   },
+   "00P:": {
+      "FIELD2": "Coal/Wood"
+   },
+   "CVE:": {
+      "FIELD2": "Convection Electric"
+   },
+   "CVG:": {
+      "FIELD2": "Convection Gas"
+   },
+   "CVO:": {
+      "FIELD2": "Convection Oil"
+   },
+   "00E or ELEC:": {
+      "FIELD2": "Electric"
+   },
+   "ELEC:": {
+      "FIELD2": "Electric"
+   },
+   "00E:": {
+      "FIELD2": "Electric"
+   },
+   "00T:": {
+      "FIELD2": "Electric/Hot Water"
+   },
+   "OOI:": {
+      "FIELD2": "Electric/Oil"
+   },
+   "00R:": {
+      "FIELD2": "Electric/Radiant"
+   },
+   "00A:": {
+      "FIELD2": "Electric/Solar"
+   },
+   "FPO:": {
+      "FIELD2": "Fireplace"
+   },
+   "FF0:": {
+      "FIELD2": "Floor Furnace"
+   },
+   "FFL:": {
+      "FIELD2": "Floor Furnace Coal/Wood"
+   },
+   "FFE:": {
+      "FIELD2": "Floor Furnace Electric"
+   },
+   "FFG:": {
+      "FIELD2": "Floor Furnace Gas"
+   },
+   "FFO:": {
+      "FIELD2": "Floor Furnace Oil"
+   },
+   "FLO:": {
+      "FIELD2": "Floor/Wall Furnace"
+   },
+   "FLRWLL:": {
+      "FIELD2": "Floor or Wall"
+   },
+   "FA0 or FRCD:": {
+      "FIELD2": "Forced Air"
+   },
+   "FRCD:": {
+      "FIELD2": "Forced Air"
+   },
+   "FAC:": {
+      "FIELD2": "Forced Air Coal"
+   },
+   "FCW:": {
+      "FIELD2": "Forced Air Coal/Wood"
+   },
+   "FAE:": {
+      "FIELD2": "Forced Air Electric"
+   },
+   "FAG:": {
+      "FIELD2": "Forced Air Gas"
+   },
+   "FN0:": {
+      "FIELD2": "Forced Air Not Ducted"
+   },
+   "FAO:": {
+      "FIELD2": "Forced Air Oil"
+   },
+   "FAW:": {
+      "FIELD2": "Forced Air Wood"
+   },
+   "FAH:": {
+      "FIELD2": "Forced Hot Water"
+   },
+   "FRO or FRNC:": {
+      "FIELD2": "Furnace"
+   },
+   "FRO:": {
+      "FIELD2": "Furnace"
+   },
+   "FRNC:": {
+      "FIELD2": "Furnace"
+   },
+   "FRC:": {
+      "FIELD2": "Furnace Coal"
+   },
+   "FRE:": {
+      "FIELD2": "Furnace Electric"
+   },
+   "FRG:": {
+      "FIELD2": "Furnace Gas"
+   },
+   "FSO:": {
+      "FIELD2": "Furnace/Stove"
+   },
+   "00G or GAS:": {
+      "FIELD2": "Gas"
+   },
+   "00G:": {
+      "FIELD2": "Gas"
+   },
+   "GAS:": {
+      "FIELD2": "Gas"
+   },
+   "00Z:": {
+      "FIELD2": "Gas Solar"
+   },
+   "00M:": {
+      "FIELD2": "Gas Steam"
+   },
+   "00D:": {
+      "FIELD2": "Gas/Wood"
+   },
+   "GR0 or GRAVITY:": {
+      "FIELD2": "Gravity"
+   },
+   "GRAVITY:": {
+      "FIELD2": "Gravity"
+   },
+   "GR0:": {
+      "FIELD2": "Gravity"
+   },
+   "GRC:": {
+      "FIELD2": "Gravity Coal"
+   },
+   "GRE:": {
+      "FIELD2": "Gravity Electric"
+   },
+   "GF0:": {
+      "FIELD2": "Gravity Furnace"
+   },
+   "GFG:": {
+      "FIELD2": "Gravity Furnace Gas"
+   },
+   "GRG:": {
+      "FIELD2": "Gravity Gas"
+   },
+   "GN0:": {
+      "FIELD2": "Gravity Not Ducted"
+   },
+   "GRO:": {
+      "FIELD2": "Gravity Oil"
+   },
+   "GRS:": {
+      "FIELD2": "Gravity Solar"
+   },
+   "HP0 or HTPMP:": {
+      "FIELD2": "Heat Pump"
+   },
+   "HP0:": {
+      "FIELD2": "Heat Pump"
+   },
+   "HTPMP:": {
+      "FIELD2": "Heat Pump"
+   },
+   "HPL:": {
+      "FIELD2": "Heat Pump Coal/Wood"
+   },
+   "HPE:": {
+      "FIELD2": "Heat Pump Electric"
+   },
+   "HPG:": {
+      "FIELD2": "Heat Pump Gas"
+   },
+   "HPH:": {
+      "FIELD2": "Heat Pump Hot Water"
+   },
+   "HPO:": {
+      "FIELD2": "Heat Pump Oil"
+   },
+   "HPS:": {
+      "FIELD2": "Heat Pump Solar"
+   },
+   "HA0:": {
+      "FIELD2": "Hot Air"
+   },
+   "HAE:": {
+      "FIELD2": "Hot Air Electric"
+   },
+   "HN0:": {
+      "FIELD2": "Hot Air Not Ducted"
+   },
+   "HAO:": {
+      "FIELD2": "Hot Air Oil"
+   },
+   "HAS:": {
+      "FIELD2": "Hot Air Solar"
+   },
+   "HW0 or HOTWTR:": {
+      "FIELD2": "Hot Water"
+   },
+   "HW0:": {
+      "FIELD2": "Hot Water"
+   },
+   "HOTWTR:": {
+      "FIELD2": "Hot Water"
+   },
+   "HWL:": {
+      "FIELD2": "Hot Water Coal/Wood"
+   },
+   "HWG:": {
+      "FIELD2": "Hot Water Gas"
+   },
+   "HWO:": {
+      "FIELD2": "Hot Water Oil"
+   },
+   "HWS:": {
+      "FIELD2": "Hot Water Solar"
+   },
+   "HS0:": {
+      "FIELD2": "Hot Water Steam"
+   },
+   "HWW:": {
+      "FIELD2": "Hot Water Wood"
+   },
+   "HWE:": {
+      "FIELD2": "Hot Water/Electric"
+   },
+   "IN0:": {
+      "FIELD2": "Industrial"
+   },
+   "JT0:": {
+      "FIELD2": "Jets"
+   },
+   "MULT:": {
+      "FIELD2": "Multiple Heat Types"
+   },
+   "NONE:": {
+      "FIELD2": "None"
+   },
+   "ND0:": {
+      "FIELD2": "Not Ducted"
+   },
+   "00O or OIL:": {
+      "FIELD2": "Oil"
+   },
+   "OIL:": {
+      "FIELD2": "Oil"
+   },
+   "00O:": {
+      "FIELD2": "Oil"
+   },
+   "00Y:": {
+      "FIELD2": "Oil/Wood"
+   },
+   "OTHER:": {
+      "FIELD2": "Other"
+   },
+   "PK0 or PKG:": {
+      "FIELD2": "Package"
+   },
+   "PK0:": {
+      "FIELD2": "Package"
+   },
+   "PKG:": {
+      "FIELD2": "Package"
+   },
+   "PKE:": {
+      "FIELD2": "Package Electric"
+   },
+   "PRT:": {
+      "FIELD2": "Partial"
+   },
+   "PT0:": {
+      "FIELD2": "Partial"
+   },
+   "PRT or PT0:": {
+      "FIELD2": "Partial"
+   },
+   "PROPANE:": {
+      "FIELD2": "Propane"
+   },
+   "RDO or RADIANT:": {
+      "FIELD2": "Radiant"
+   },
+   "RDO:": {
+      "FIELD2": "Radiant"
+   },
+   "RADIANT:": {
+      "FIELD2": "Radiant"
+   },
+   "RCO:": {
+      "FIELD2": "Radiant Ceiling"
+   },
+   "RDE:": {
+      "FIELD2": "Radiant Electric"
+   },
+   "RDI:": {
+      "FIELD2": "Radiant Electric/Oil"
+   },
+   "RDH:": {
+      "FIELD2": "Radiant Hot Water"
+   },
+   "RGO:": {
+      "FIELD2": "Radiant Hot Water Oil"
+   },
+   "RDW:": {
+      "FIELD2": "Radiant Wood"
+   },
+   "00S or SOLAR:": {
+      "FIELD2": "Solar"
+   },
+   "00S:": {
+      "FIELD2": "Solar"
+   },
+   "SOLAR:": {
+      "FIELD2": "Solar"
+   },
+   "00N:": {
+      "FIELD2": "Solar/Coal/Wood"
+   },
+   "00Q:": {
+      "FIELD2": "Solar/Oil"
+   },
+   "SPACE:": {
+      "FIELD2": "Space Heater"
+   },
+   "STEAM:": {
+      "FIELD2": "Steam"
+   },
+   "STOVE:": {
+      "FIELD2": "Stove"
+   },
+   "UNKNOWN:": {
+      "FIELD2": "Unknown Heating"
+   },
+   "WRMAIR:": {
+      "FIELD2": "Warm Air"
+   },
+   "00W or WOOD:": {
+      "FIELD2": "Wood"
+   },
+   "00W:": {
+      "FIELD2": "Wood"
+   },
+   "WOOD:": {
+      "FIELD2": "Wood"
+   },
+   "FRW:": {
+      "FIELD2": "Wood Furnace"
+   },
+   "ZONED:": {
+      "FIELD2": "Zoned"
+   },
+   "BSMT:": {
+      "FIELD2": "Basement"
+   },
+   "BDRM:": {
+      "FIELD2": "Bedroom"
+   },
+   "BDRR:": {
+      "FIELD2": "Bedroom & Recreation Room"
+   },
+   "CMPF:": {
+      "FIELD2": "Completely Finished"
+   },
+   "CRWL:": {
+      "FIELD2": "Crawl-Space"
+   },
+   "DAYLIGHT:": {
+      "FIELD2": "Daylight"
+   },
+   "FNSD or FIN:": {
+      "FIELD2": "Finished"
+   },
+   "FNSD:": {
+      "FIELD2": "Finished"
+   },
+   "FIN:": {
+      "FIELD2": "Finished"
+   },
+   "FWDW:": {
+      "FIELD2": "Finished With Drywall"
+   },
+   "FWPA:": {
+      "FIELD2": "Finished With Panel"
+   },
+   "FWPL:": {
+      "FIELD2": "Finished With Plaster"
+   },
+   "FULL:": {
+      "FIELD2": "Full Basement"
+   },
+   "NONE:": {
+      "FIELD2": "No Basement or None"
+   },
+   "OFFC:": {
+      "FIELD2": "Office"
+   },
+   "PARK:": {
+      "FIELD2": "Parking"
+   },
+   "PARTIAL:": {
+      "FIELD2": "Partial"
+   },
+   "PRTF:": {
+      "FIELD2": "Partially Finished"
+   },
+   "RECR:": {
+      "FIELD2": "Recreational Room"
+   },
+   "RSDT:": {
+      "FIELD2": "Resident"
+   },
+   "STRG:": {
+      "FIELD2": "Storage"
+   },
+   "UKWN:": {
+      "FIELD2": "Type Unknown"
+   },
+   "UNFIN:": {
+      "FIELD2": "Unfinished"
+   },
+   "UTIL:": {
+      "FIELD2": "Utility"
+   },
+   "000:": {
+      "FIELD2": "None"
+   },
+   "001:": {
+      "FIELD2": "Unknown"
+   },
+   "0B0:": {
+      "FIELD2": "Brick Chimney"
+   },
+   "0C0:": {
+      "FIELD2": "Coal/Wood"
+   },
+   "0G0:": {
+      "FIELD2": "Gas/Log"
+   },
+   "0M0:": {
+      "FIELD2": "Masonry"
+   },
+   "0M1:": {
+      "FIELD2": "Masonry 1 Opening"
+   },
+   "0N0:": {
+      "FIELD2": "Cinder/Concrete Block Chimne"
+   },
+   "0P2:": {
+      "FIELD2": "2 Openings Prefab"
+   },
+   "0R0:": {
+      "FIELD2": "See Thru"
+   },
+   "0T1:": {
+      "FIELD2": "1 Metal Opening"
+   },
+   "0U1:": {
+      "FIELD2": "1 Opening"
+   },
+   "0U2:": {
+      "FIELD2": "2 Openings"
+   },
+   "0U3:": {
+      "FIELD2": "3 Openings"
+   },
+   "0U4:": {
+      "FIELD2": "4 Openings"
+   },
+   "0U5:": {
+      "FIELD2": "5 Openings"
+   },
+   "0U6:": {
+      "FIELD2": "6 Openings"
+   },
+   "0U7:": {
+      "FIELD2": "7 Openings"
+   },
+   "0U8:": {
+      "FIELD2": "8 Openings"
+   },
+   "0U9:": {
+      "FIELD2": "9 Openings"
+   },
+   "0UA:": {
+      "FIELD2": "10 Openings"
+   },
+   "0UB:": {
+      "FIELD2": "11 Openings"
+   },
+   "0UC:": {
+      "FIELD2": "12 Openings"
+   },
+   "0V0:": {
+      "FIELD2": "Massive"
+   },
+   "0V2:": {
+      "FIELD2": "Massive 2 Openings"
+   },
+   "0W0:": {
+      "FIELD2": "Wood Stove"
+   },
+   "0X0:": {
+      "FIELD2": "Stone, Brick, Marble"
+   },
+   "1:": {
+      "FIELD2": "1 Fireplace"
+   },
+   "100:": {
+      "FIELD2": "Plastic"
+   },
+   "1B0:": {
+      "FIELD2": "1 Story Brick"
+   },
+   "1F0:": {
+      "FIELD2": "1 Story Frame"
+   },
+   "1O0:": {
+      "FIELD2": "1 Story Stucco"
+   },
+   "1P0:": {
+      "FIELD2": "1 Story Prefab"
+   },
+   "1S0:": {
+      "FIELD2": "1 Story Stone"
+   },
+   "1U0:": {
+      "FIELD2": "1 Story"
+   },
+   "1U1:": {
+      "FIELD2": "1 Story 1 Opening"
+   },
+   "1U2:": {
+      "FIELD2": "1 Story 2 Openings"
+   },
+   "1UX:": {
+      "FIELD2": "1 Story Extra Opening"
+   },
+   "2:": {
+      "FIELD2": "2 Fireplaces"
+   },
+   "2B0:": {
+      "FIELD2": "2 Story Brick"
+   },
+   "2F0:": {
+      "FIELD2": "2 Story Frame"
+   },
+   "2O0:": {
+      "FIELD2": "2 Story Stucco"
+   },
+   "2P0:": {
+      "FIELD2": "2 Story Prefab"
+   },
+   "2S0:": {
+      "FIELD2": "2 Story Stone"
+   },
+   "2U0:": {
+      "FIELD2": "2 Story"
+   },
+   "2U1:": {
+      "FIELD2": "2 Story 1 Opening"
+   },
+   "2U2:": {
+      "FIELD2": "2 Story 2 Openings"
+   },
+   "2U3:": {
+      "FIELD2": "2 Story 3 Openings"
+   },
+   "2U4:": {
+      "FIELD2": "2 Story 4 Openings"
+   },
+   "2UX:": {
+      "FIELD2": "2 Story Extra Opening"
+   },
+   "3:": {
+      "FIELD2": "3 Fireplaces"
+   },
+   "3B0:": {
+      "FIELD2": "3 Story Brick"
+   },
+   "3F0:": {
+      "FIELD2": "3 Story Frame"
+   },
+   "3P0:": {
+      "FIELD2": "3 Story Prefab"
+   },
+   "3U1:": {
+      "FIELD2": "3 Story 1 Openings"
+   },
+   "3U2:": {
+      "FIELD2": "3 Story 2 Openings"
+   },
+   "3U3:": {
+      "FIELD2": "3 Story 3 Openings"
+   },
+   "3UX:": {
+      "FIELD2": "3 Story Extra Opening"
+   },
+   "4:": {
+      "FIELD2": "4 Fireplaces"
+   },
+   "5:": {
+      "FIELD2": "5 Fireplaces"
+   },
+   "6:": {
+      "FIELD2": "6 Fireplaces"
+   },
+   "7:": {
+      "FIELD2": "7 Fireplaces"
+   },
+   "8:": {
+      "FIELD2": "8 Fireplaces"
+   },
+   "9:": {
+      "FIELD2": "9 Fireplaces"
+   },
+   "AB0:": {
+      "FIELD2": "1.5 Story Brick"
+   },
+   "AO0:": {
+      "FIELD2": "1.5 Story Stucco"
+   },
+   "AP0:": {
+      "FIELD2": "1.5 Story Prefab"
+   },
+   "AS0:": {
+      "FIELD2": "1.5 Story Stone"
+   },
+   "AU0:": {
+      "FIELD2": "1.5 Story"
+   },
+   "DEFAULT:": {
+      "FIELD2": "Default"
+   },
+   "MSN:": {
+      "FIELD2": "Masonryk"
+   },
+   "STE:": {
+      "FIELD2": "Steel"
+   },
+   "STN:": {
+      "FIELD2": "Stone"
+   },
+   "COAL:": {
+      "FIELD2": "Coal"
+   },
+   "ELEC:": {
+      "FIELD2": "Electric"
+   },
+   "GAS:": {
+      "FIELD2": "Gas"
+   },
+   "GASELEC:": {
+      "FIELD2": "Gas and Electric"
+   },
+   "NONE:": {
+      "FIELD2": "None"
+   },
+   "OIL:": {
+      "FIELD2": "Oil"
+   },
+   "PUBLIC:": {
+      "FIELD2": "Public"
+   },
+   "PRIVATE:": {
+      "FIELD2": "Private"
+   },
+   "SOLAR:": {
+      "FIELD2": "Solar"
+   },
+   "WOOD:": {
+      "FIELD2": "Wood"
+   },
+   "001:": {
+      "FIELD2": "Unknown"
+   },
+   "SCE or CSPL:": {
+      "FIELD2": "Cesspool"
+   },
+   "SCE:": {
+      "FIELD2": "Cesspool"
+   },
+   "CSPL:": {
+      "FIELD2": "Cesspool"
+   },
+   "C00 or COM:": {
+      "FIELD2": "Commercial"
+   },
+   "C00:": {
+      "FIELD2": "Commercial"
+   },
+   "COM:": {
+      "FIELD2": "Commercial"
+   },
+   "000 or NONE:": {
+      "FIELD2": "None"
+   },
+   "000:": {
+      "FIELD2": "None"
+   },
+   "NONE:": {
+      "FIELD2": "None"
+   },
+   "WPR or PRIVATE:": {
+      "FIELD2": "Private"
+   },
+   "WPR:": {
+      "FIELD2": "Private"
+   },
+   "PRIVATE:": {
+      "FIELD2": "Private"
+   },
+   "WPU or PUBLIC:": {
+      "FIELD2": "Public"
+   },
+   "WPU:": {
+      "FIELD2": "Public"
+   },
+   "PUBLIC:": {
+      "FIELD2": "Public"
+   },
+   "SSE or SEPTIC:": {
+      "FIELD2": "Septic"
+   },
+   "SSE:": {
+      "FIELD2": "Septic"
+   },
+   "SEPTIC:": {
+      "FIELD2": "Septic"
+   },
+   "STR or STORM:": {
+      "FIELD2": "Storm"
+   },
+   "STR:": {
+      "FIELD2": "Storm"
+   },
+   "STORM:": {
+      "FIELD2": "Storm"
+   },
+   "000:": {
+      "FIELD2": "None"
+   },
+   "NONE:": {
+      "FIELD2": "None"
+   },
+   "000 or NONE:": {
+      "FIELD2": "None"
+   },
+   "001:": {
+      "FIELD2": "Unknown"
+   },
+   "C00 or COM:": {
+      "FIELD2": "Commercial"
+   },
+   "C00:": {
+      "FIELD2": "Commercial"
+   },
+   "COM:": {
+      "FIELD2": "Commercial"
+   },
+   "WCI or CISTERN:": {
+      "FIELD2": "Cistern or Barrel"
+   },
+   "CISTERN:": {
+      "FIELD2": "Cistern or Barrel"
+   },
+   "WCI:": {
+      "FIELD2": "Cistern or Barrel"
+   },
+   "PRIVATE:": {
+      "FIELD2": "Private"
+   },
+   "WPU or PUBLIC:": {
+      "FIELD2": "Public"
+   },
+   "WPU:": {
+      "FIELD2": "Public"
+   },
+   "PUBLIC:": {
+      "FIELD2": "Public"
+   },
+   "WPW or PUBWELL:": {
+      "FIELD2": "Public Well"
+   },
+   "WPW:": {
+      "FIELD2": "Public Well"
+   },
+   "PUBWELL:": {
+      "FIELD2": "Public Well"
+   },
+   "WSC or SPRING": {
+      "FIELD2": "Spring/Creek"
+   },
+   "WSC": {
+      "FIELD2": "Spring/Creek"
+   },
+   "SPRING": {
+      "FIELD2": "Spring/Creek"
+   },
+   "WWE or WELL:": {
+      "FIELD2": "Well"
+   },
+   "WWE:": {
+      "FIELD2": "Well"
+   },
+   "WELL:": {
+      "FIELD2": "Well"
+   },
+   "CMNTYPROP:": {
+      "FIELD2": "Community Property (Married)"
+   },
+   "CORP:": {
+      "FIELD2": "Company or Corporation"
+   },
+   "ESTATE:": {
+      "FIELD2": "Estate"
+   },
+   "FAMTST:": {
+      "FIELD2": "Family Trust"
+   },
+   "IRRTRUST:": {
+      "FIELD2": "Irrevocable Trust"
+   },
+   "JT:": {
+      "FIELD2": "Joint Tenants"
+   },
+   "LIFEEST:": {
+      "FIELD2": "Life Estate"
+   },
+   "PARTNERSHIP:": {
+      "FIELD2": "Partnership"
+   },
+   "REVTST:": {
+      "FIELD2": "Revocable Trust"
+   },
+   "SOLEOWN:": {
+      "FIELD2": "Sole Owner"
+   },
+   "TNTCMN:": {
+      "FIELD2": "Tenants in Common"
+   },
+   "TNTENT:": {
+      "FIELD2": "Tenancy in the Entirety"
+   },
+   "TNTSVR:": {
+      "FIELD2": "Tenants in Severalty"
+   },
+   "TST:": {
+      "FIELD2": "Trust"
+   },
+   "AGENT:": {
+      "FIELD2": "Agent"
+   },
+   "AKA:": {
+      "FIELD2": "Also Known As"
+   },
+   "ASSIGNEE:": {
+      "FIELD2": "Assignee"
+   },
+   "ASSIGNOR:": {
+      "FIELD2": "Assignor"
+   },
+   "BENEFICRY:": {
+      "FIELD2": "Beneficiary/Creditor"
+   },
+   "CORP:": {
+      "FIELD2": "Company/Corporation"
+   },
+   "DBA:": {
+      "FIELD2": "Doing Business As"
+   },
+   "DECEASD:": {
+      "FIELD2": "Deceased"
+   },
+   "DEFENDNT:": {
+      "FIELD2": "Defendant"
+   },
+   "ESTATE:": {
+      "FIELD2": "Estate"
+   },
+   "EXECUTOR:": {
+      "FIELD2": "Executor/Administrator"
+   },
+   "FAMTST:": {
+      "FIELD2": "Family Trust"
+   },
+   "FKA:": {
+      "FIELD2": "Formerly Known As"
+   },
+   "FROMAFFDT:": {
+      "FIELD2": "Buyer Name derived from Affidavit"
+   },
+   "GOVT:": {
+      "FIELD2": "Government"
+   },
+   "INDIVIDUAL:": {
+      "FIELD2": "Individual"
+   },
+   "IRRLVTST:": {
+      "FIELD2": "Irrevocable Living Trust"
+   },
+   "IRRTRUST:": {
+      "FIELD2": "Irrevocable Trust"
+   },
+   "LIVTRUST:": {
+      "FIELD2": "Living Trust"
+   },
+   "MARRIED:": {
+      "FIELD2": "Married Person"
+   },
+   "MARRIEDMAN:": {
+      "FIELD2": "Married Man"
+   },
+   "MARRIEDWMN:": {
+      "FIELD2": "Married Woman"
+   },
+   "MINOR:": {
+      "FIELD2": "Minor"
+   },
+   "NTCDFLT:": {
+      "FIELD2": "Notice of Default"
+   },
+   "PARTNERSHIP:": {
+      "FIELD2": "Partnership"
+   },
+   "PERSREP:": {
+      "FIELD2": "Personal Represenative"
+   },
+   "PLAINTIFF:": {
+      "FIELD2": "Plaintiff"
+   },
+   "REVLVTST:": {
+      "FIELD2": "Revocable Living Trust"
+   },
+   "REVTRUST:": {
+      "FIELD2": "Revocable Trust"
+   },
+   "SINGLE:": {
+      "FIELD2": "Single Person or Individual"
+   },
+   "SINGLEMAN:": {
+      "FIELD2": "Single or Unmarried Man"
+   },
+   "SINGLEWMN:": {
+      "FIELD2": "Single Woman"
+   },
+   "SURVIVJT:": {
+      "FIELD2": "Surviving Joint Tenant"
+   },
+   "TRUSTEE:": {
+      "FIELD2": "Trustee or Conservator"
+   },
+   "TRUSTOR:": {
+      "FIELD2": "Trustor/Debtor"
+   },
+   "WEDCOUPLE:": {
+      "FIELD2": "Married Couple"
+   },
+   "WIDOW(ER):": {
+      "FIELD2": "Widow/Widower"
+   },
+   "AA:": {
+      "FIELD2": "Assignment And Agreement of Sale"
+   },
+   "CS:": {
+      "FIELD2": "Contract of Sale"
+   },
+   "AD:": {
+      "FIELD2": "Administrator S Deed"
+   },
+   "BA:": {
+      "FIELD2": "Bargain & Sale Deed"
+   },
+   "CD:": {
+      "FIELD2": "Correction Deed"
+   },
+   "PB:": {
+      "FIELD2": "Probate Court Deed"
+   },
+   "QC:": {
+      "FIELD2": "Quit Claim Deed"
+   },
+   "SD:": {
+      "FIELD2": "Sheriff S Deed"
+   },
+   "TU:": {
+      "FIELD2": "Trustee S Deed (Transfer)"
+   },
+   "WD:": {
+      "FIELD2": "Warranty Deed"
+   },
+   "ADMN:": {
+      "FIELD2": "Administrator"
+   },
+   "AF:": {
+      "FIELD2": "Affidavit"
+   },
+   "AG:": {
+      "FIELD2": "Agreement of Sale"
+   },
+   "AI:": {
+      "FIELD2": "All inclusive Deed of Trust"
+   },
+   "AJ:": {
+      "FIELD2": "Administrator Joint Tenancy"
+   },
+   "AL:": {
+      "FIELD2": "Assgnmt/Assmptn of Lease/Subls"
+   },
+   "AN:": {
+      "FIELD2": "Assignment Deed"
+   },
+   "AP:": {
+      "FIELD2": "Assumption"
+   },
+   "AS:": {
+      "FIELD2": "Assignment of Deed of Trust"
+   },
+   "ASGN:": {
+      "FIELD2": "Assignment of Control"
+   },
+   "AU:": {
+      "FIELD2": "Auction"
+   },
+   "BRGN:": {
+      "FIELD2": "Bargain Sale"
+   },
+   "CA:": {
+      "FIELD2": "County Deed"
+   },
+   "CL:": {
+      "FIELD2": "Construction Deed of Trust"
+   },
+   "CM:": {
+      "FIELD2": "Commissioner S Deed"
+   },
+   "CN:": {
+      "FIELD2": "Condominium Deed"
+   },
+   "COR:": {
+      "FIELD2": "Correction Deed"
+   },
+   "CQ:": {
+      "FIELD2": "Corporation Quit Claim Deed"
+   },
+   "CR:": {
+      "FIELD2": "Corporate Deed"
+   },
+   "CT:": {
+      "FIELD2": "Committee Deed"
+   },
+   "CV:": {
+      "FIELD2": "Conveyance Deed"
+   },
+   "DA:": {
+      "FIELD2": "Deed Of Assumption"
+   },
+   "DD:": {
+      "FIELD2": "Deed"
+   },
+   "DI:": {
+      "FIELD2": "Deed Of Distribution"
+   },
+   "DL:": {
+      "FIELD2": "Deed In Lieu Of Forclosure"
+   },
+   "DP:": {
+      "FIELD2": "Down Payment Assistance Loan (SC)"
+   },
+   "DR:": {
+      "FIELD2": "Deed or Release"
+   },
+   "DTST:": {
+      "FIELD2": "Deed of Trust"
+   },
+   "EJ:": {
+      "FIELD2": "Executor Joint Tenant"
+   },
+   "EQ:": {
+      "FIELD2": "Equity or Credit Line"
+   },
+   "FD:": {
+      "FIELD2": "Foreclosure Deed"
+   },
+   "FI:": {
+      "FIELD2": "Fiduciary Deed"
+   },
+   "FJGD:": {
+      "FIELD2": "Final Judgement"
+   },
+   "FR:": {
+      "FIELD2": "Forfeiture Deed"
+   },
+   "FS:": {
+      "FIELD2": "Fee Simple Deed"
+   },
+   "GF:": {
+      "FIELD2": "Gift Deed"
+   },
+   "GJ:": {
+      "FIELD2": "Guardian Joint Tenant"
+   },
+   "GRANT:": {
+      "FIELD2": "Grant"
+   },
+   "GU:": {
+      "FIELD2": "Guardian Deed"
+   },
+   "IC:": {
+      "FIELD2": "Intercompany Deed Transfer"
+   },
+   "ID:": {
+      "FIELD2": "Intercompany/Interfamily Deed"
+   },
+   "IF:": {
+      "FIELD2": "Interfamily Deed Transfer"
+   },
+   "IM:": {
+      "FIELD2": "Indemnity Deed Of Trust"
+   },
+   "IN:": {
+      "FIELD2": "Institutional Deed"
+   },
+   "IS:": {
+      "FIELD2": "Interspousal Deed Transfer"
+   },
+   "IV:": {
+      "FIELD2": "Individual Grant Deed"
+   },
+   "JT:": {
+      "FIELD2": "Joint Tenancy Deed"
+   },
+   "LA:": {
+      "FIELD2": "Lease Agreement"
+   },
+   "LH:": {
+      "FIELD2": "Leasehold Deed"
+   },
+   "LM:": {
+      "FIELD2": "Limited Warranty Deed"
+   },
+   "LPND:": {
+      "FIELD2": "Lis Pendens"
+   },
+   "MA:": {
+      "FIELD2": "Marshalls Deed"
+   },
+   "MD:": {
+      "FIELD2": "Masters Deed (SC)"
+   },
+   "MF:": {
+      "FIELD2": "Mortgage Foreclosure Deed"
+   },
+   "MG:": {
+      "FIELD2": "Mortgage Deed"
+   },
+   "NT:": {
+      "FIELD2": "Notice Of Trustees Sale"
+   },
+   "OT:": {
+      "FIELD2": "Miscellaneous Document"
+   },
+   "PA:": {
+      "FIELD2": "Public Auction Deed"
+   },
+   "PD:": {
+      "FIELD2": "Partnership Grant Deed"
+   },
+   "PJ:": {
+      "FIELD2": "Personal Rep Joint Tenant"
+   },
+   "PN:": {
+      "FIELD2": "Patent (Land)"
+   },
+   "PO:": {
+      "FIELD2": "Pay Off Deed"
+   },
+   "PR:": {
+      "FIELD2": "Personal Rep S Deed"
+   },
+   "PRBT:": {
+      "FIELD2": "Probate"
+   },
+   "PT:": {
+      "FIELD2": "Public Trustees Deed"
+   },
+   "PV:": {
+      "FIELD2": "Private Sale"
+   },
+   "QJ:": {
+      "FIELD2": "Joint Tenant Quit Claim Deed"
+   },
+   "QUIT:": {
+      "FIELD2": "Quit Claim"
+   },
+   "RC:": {
+      "FIELD2": "Receiver S Deed"
+   },
+   "RD:": {
+      "FIELD2": "Rerecorded Deed"
+   },
+   "RF:": {
+      "FIELD2": "Referee's Deed"
+   },
+   "RV:": {
+      "FIELD2": "Revolving Line of Credit"
+   },
+   "SA:": {
+      "FIELD2": "State Deed"
+   },
+   "SC:": {
+      "FIELD2": "Certificate Of Sale - Sheriff/Marshall"
+   },
+   "SE:": {
+      "FIELD2": "Security Deed"
+   },
+   "SHRF:": {
+      "FIELD2": "Sherrifs"
+   },
+   "SJ:": {
+      "FIELD2": "Special Warranty Deed Joint Tenant"
+   },
+   "SL:": {
+      "FIELD2": "Sub Lease"
+   },
+   "SO:": {
+      "FIELD2": "Selling Officer Deed (Il)"
+   },
+   "SR:": {
+      "FIELD2": "Straw Deed"
+   },
+   "ST:": {
+      "FIELD2": "Settlement Deed"
+   },
+   "SU:": {
+      "FIELD2": "Joint Survivorship / Right Of"
+   },
+   "SW:": {
+      "FIELD2": "Special Warranty Deed"
+   },
+   "TA:": {
+      "FIELD2": "Trust Agreement"
+   },
+   "TC:": {
+      "FIELD2": "Certificate Of Title (FL)"
+   },
+   "TD:": {
+      "FIELD2": "Trustee S Deed (Foreclosure)"
+   },
+   "TJ:": {
+      "FIELD2": "Trustees Joint Tenant"
+   },
+   "TSALE:": {
+      "FIELD2": "Trustees Sale"
+   },
+   "TT:": {
+      "FIELD2": "Torrens Document"
+   },
+   "TX:": {
+      "FIELD2": "Tax Deed"
+   },
+   "UD:": {
+      "FIELD2": "Unit Deed"
+   },
+   "WJ:": {
+      "FIELD2": "Warranty Deed Joint Tenant"
+   },
+   "WRNT:": {
+      "FIELD2": "Warranty"
+   },
+   "XD:": {
+      "FIELD2": "Exchange Deed"
+   },
+   "XP:": {
+      "FIELD2": "Exemption Deed"
+   },
+   "47:": {
+      "FIELD2": "Adobe"
+   },
+   "48:": {
+      "FIELD2": "Aluminum or Aluminum Siding"
+   },
+   "49:": {
+      "FIELD2": "Asbestos Shingle or Plank Siding"
+   },
+   "50:": {
+      "FIELD2": "Brick - Solid Masonry"
+   },
+   "51:": {
+      "FIELD2": "Brick Veneer"
+   },
+   "52:": {
+      "FIELD2": "Combination of two or more materials"
+   },
+   "53:": {
+      "FIELD2": "Composition Siding"
+   },
+   "54:": {
+      "FIELD2": "Concrete Block"
+   },
+   "56:": {
+      "FIELD2": "Exterior Plywood"
+   },
+   "57:": {
+      "FIELD2": "Hardboard"
+   },
+   "58:": {
+      "FIELD2": "Log"
+   },
+   "59:": {
+      "FIELD2": "Permastone (Formstone)"
+   },
+   "61:": {
+      "FIELD2": "Sandwich Panels"
+   },
+   "62:": {
+      "FIELD2": "Solid Board"
+   },
+   "63:": {
+      "FIELD2": "Steel Siding"
+   },
+   "64:": {
+      "FIELD2": "Stone"
+   },
+   "65:": {
+      "FIELD2": "Tile"
+   },
+   "66:": {
+      "FIELD2": "Stucco"
+   },
+   "67:": {
+      "FIELD2": "Vinyl Siding"
+   },
+   "68:": {
+      "FIELD2": "Wood"
+   },
+   "69:": {
+      "FIELD2": "Wood Shingle or Wood Shake"
+   },
+   "582:": {
+      "FIELD2": "Siding"
+   },
+   "608:": {
+      "FIELD2": "Glass"
+   },
+   "609:": {
+      "FIELD2": "Metal"
+   },
+   "757:": {
+      "FIELD2": "Fiberglass"
+   },
+   "758:": {
+      "FIELD2": "Asphault or Asphault Shingle"
+   },
+   "784:": {
+      "FIELD2": "Bevel"
+   },
+   "785:": {
+      "FIELD2": "Marble"
+   },
+   "786:": {
+      "FIELD2": "Protective"
+   },
+   "787:": {
+      "FIELD2": "Shingles"
+   },
+   "ABL:": {
+      "FIELD2": "ALUMINUM/BLOCK"
+   },
+   "ABP:": {
+      "FIELD2": "ASBESTOS/BLOCK/PLYWOOD"
+   },
+   "ABR:": {
+      "FIELD2": "ASBESTOS/BRICK"
+   },
+   "ABV:": {
+      "FIELD2": "ASBESTOS/BRICK VENEER/WOOD"
+   },
+   "ABW:": {
+      "FIELD2": "ASBESTOS/BLOCK/WOOD"
+   },
+   "ADO:": {
+      "FIELD2": "ADOBE BLOCK"
+   },
+   "AFW:": {
+      "FIELD2": "ASPHALT/FIBERGLASS/WOOD FRAME"
+   },
+   "ALB:": {
+      "FIELD2": "ALUMINUM/BRICK"
+   },
+   "ALF:": {
+      "FIELD2": "FRAME/ALUMINUM"
+   },
+   "ALM:": {
+      "FIELD2": "ALUMINUM/MASONITE"
+   },
+   "ALN:": {
+      "FIELD2": "ALUMINUM/STONE"
+   },
+   "ALS:": {
+      "FIELD2": "ALUMINUM SIDING"
+   },
+   "ALU:": {
+      "FIELD2": "ALUMINUM"
+   },
+   "ALV:": {
+      "FIELD2": "ALUMINUM/VINYL"
+   },
+   "AME:": {
+      "FIELD2": "ALUMINUM/METAL"
+   },
+   "AMS:": {
+      "FIELD2": "ALUMINUM SIDING/STUCCO"
+   },
+   "ASB:": {
+      "FIELD2": "ASBESTOS"
+   },
+   "ASC:": {
+      "FIELD2": "ASBESTOS/CONCRETE"
+   },
+   "ASD:": {
+      "FIELD2": "ASPHALT SIDING"
+   },
+   "ASF:": {
+      "FIELD2": "ASBESTOS FRAME"
+   },
+   "ASG:": {
+      "FIELD2": "ASBESTOS SHINGLE"
+   },
+   "ASI:": {
+      "FIELD2": "ASBESTOS SIDING"
+   },
+   "ASK:": {
+      "FIELD2": "ASBESTOS/BLOCK"
+   },
+   "ASM:": {
+      "FIELD2": "ASBESTOS/MASONITE"
+   },
+   "ASO:": {
+      "FIELD2": "ALUMINUM/STUCCO"
+   },
+   "ASP:": {
+      "FIELD2": "ASBESTOS/PERMASTONE"
+   },
+   "AST:": {
+      "FIELD2": "ASBESTOS/STONE"
+   },
+   "ASV:": {
+      "FIELD2": "ASBESTOS/VINYL"
+   },
+   "ASW:": {
+      "FIELD2": "ASBESTOS/WOOD"
+   },
+   "AWD:": {
+      "FIELD2": "ASBESTOS/STONE/WOOD"
+   },
+   "BAS:": {
+      "FIELD2": "BLOCK/ASBESTOS SHINGLE"
+   },
+   "BBA:": {
+      "FIELD2": "BOARD & BATTEN"
+   },
+   "BBD:": {
+      "FIELD2": "BLACK-BOARD"
+   },
+   "BBS:": {
+      "FIELD2": "BRICK/CONCRETE BLOCK STUCCO"
+   },
+   "BBW:": {
+      "FIELD2": "BOARD & BATTEN/WOOD FRAME"
+   },
+   "BFS:": {
+      "FIELD2": "BRICK FRAME/STONE"
+   },
+   "BFT:": {
+      "FIELD2": "BRICK/FRAME/STUCCO"
+   },
+   "BFV:": {
+      "FIELD2": "BRICK/FRAME/VENEER"
+   },
+   "BFW:": {
+      "FIELD2": "BRICK/FRAME/WOOD"
+   },
+   "BLB:": {
+      "FIELD2": "BLOCK/BRICK"
+   },
+   "BLF:": {
+      "FIELD2": "FRAME/BLOCK"
+   },
+   "BLM:": {
+      "FIELD2": "BLOCK/MASONRY"
+   },
+   "BLO:": {
+      "FIELD2": "BLOCK"
+   },
+   "BLP:": {
+      "FIELD2": "BLOCK PAINTED"
+   },
+   "BLS:": {
+      "FIELD2": "BLOCK/STONE"
+   },
+   "BLT:": {
+      "FIELD2": "BLOCK/METAL"
+   },
+   "BLW:": {
+      "FIELD2": "BLOCK/WOOD"
+   },
+   "BMG:": {
+      "FIELD2": "BRICK/METAL & GLASS PANEL"
+   },
+   "BMM:": {
+      "FIELD2": "BRICK/MASONITE"
+   },
+   "BMN:": {
+      "FIELD2": "BRICK/MASONRY/STONE"
+   },
+   "BMS:": {
+      "FIELD2": "BLOCK/MASONRY/STUCCO"
+   },
+   "BMT:": {
+      "FIELD2": "BRICK/METAL"
+   },
+   "BMV:": {
+      "FIELD2": "BRICK/METAL/VENEER"
+   },
+   "BOP:": {
+      "FIELD2": "BOARD ON POST"
+   },
+   "BRC:": {
+      "FIELD2": "BRICK/CONCRETE"
+   },
+   "BRI:": {
+      "FIELD2": "BRICK"
+   },
+   "BRM:": {
+      "FIELD2": "BRICK/MASONRY"
+   },
+   "BRO:": {
+      "FIELD2": "BRICK/STUCCO"
+   },
+   "BRP:": {
+      "FIELD2": "BRICK/PERMASTONE"
+   },
+   "BRS:": {
+      "FIELD2": "BRICK/STONE"
+   },
+   "BRV:": {
+      "FIELD2": "BRICK VENEER"
+   },
+   "BRW:": {
+      "FIELD2": "BRICK/WOOD"
+   },
+   "BRX:": {
+      "FIELD2": "BRICK VENEER/STONE/WOOD"
+   },
+   "BSD:": {
+      "FIELD2": "BRICK SIDING"
+   },
+   "BSH:": {
+      "FIELD2": "BRICK/SHINGLE"
+   },
+   "BSO:": {
+      "FIELD2": "BLOCK/STONE/WOOD"
+   },
+   "BST:": {
+      "FIELD2": "BLOCK/STUCCO"
+   },
+   "BSV:": {
+      "FIELD2": "BRICK/STONE VENEER"
+   },
+   "BSW:": {
+      "FIELD2": "BRICK/STONE/WOOD SIDING"
+   },
+   "BTL:": {
+      "FIELD2": "BRICK/TILE"
+   },
+   "BVB:": {
+      "FIELD2": "BRICK VENEER/BLOCK"
+   },
+   "BVN:": {
+      "FIELD2": "BRICK/VINYL"
+   },
+   "BVW:": {
+      "FIELD2": "BRICK VENEER/WOOD"
+   },
+   "BWB:": {
+      "FIELD2": "BRICK VENEER/WALL BOARD"
+   },
+   "BWD:": {
+      "FIELD2": "BRICK/WOOD SIDING"
+   },
+   "BWS:": {
+      "FIELD2": "BRICK/STUCCO/WOOD"
+   },
+   "BWT:": {
+      "FIELD2": "BRICK/WOOD/STONE VENEER"
+   },
+   "BWV:": {
+      "FIELD2": "BRICK/WOOD/VINYL"
+   },
+   "CBC:": {
+      "FIELD2": "CONCRETE BRICK/COMPOSITION"
+   },
+   "CBE:": {
+      "FIELD2": "CONCRETE BLOCK/STEEL"
+   },
+   "CBL:": {
+      "FIELD2": "CONCRETE BLOCK/METAL"
+   },
+   "CBM:": {
+      "FIELD2": "CINDER BLOCK/MASONITE"
+   },
+   "CBP:": {
+      "FIELD2": "CONCRETE BRICK/PANEL"
+   },
+   "CBS:": {
+      "FIELD2": "CONCRETE BLOCK/STUCCO"
+   },
+   "CBU:": {
+      "FIELD2": "CINDER BLOCK/STUCCO"
+   },
+   "CBV:": {
+      "FIELD2": "CONCRETE BLOCK/STONE VENEER"
+   },
+   "CBW:": {
+      "FIELD2": "CINDER BLOCK/WOOD"
+   },
+   "CBY:": {
+      "FIELD2": "CONCRETE BLOCK/MASONRY"
+   },
+   "CCB:": {
+      "FIELD2": "CINDER BLOCK"
+   },
+   "CCC:": {
+      "FIELD2": "CONCRETE/CINDER BLOCK"
+   },
+   "CDR:": {
+      "FIELD2": "CONCRETE/DRYVIT"
+   },
+   "CFS:": {
+      "FIELD2": "CONCRETE/FRAME/STEEL"
+   },
+   "CGP:": {
+      "FIELD2": "CONCRETE/GLASS PANELS"
+   },
+   "CHA:": {
+      "FIELD2": "TONGUE & GROOVE/CHANNEL"
+   },
+   "CLA:": {
+      "FIELD2": "CLAPBOARD"
+   },
+   "CLT:": {
+      "FIELD2": "CLAY TILE"
+   },
+   "CMG:": {
+      "FIELD2": "CB/METAL/GLASS PANEL"
+   },
+   "CMS:": {
+      "FIELD2": "CONCRETE MASONRY"
+   },
+   "CMT:": {
+      "FIELD2": "CONCRETE/METAL"
+   },
+   "CMW:": {
+      "FIELD2": "CORRUGATED METAL/WALLBOARD"
+   },
+   "CNB:": {
+      "FIELD2": "CONCRETE BLOCK"
+   },
+   "CNT:": {
+      "FIELD2": "CONCRETE TILE"
+   },
+   "COM:": {
+      "FIELD2": "COMPOSITION"
+   },
+   "CON:": {
+      "FIELD2": "CONCRETE"
+   },
+   "COS:": {
+      "FIELD2": "COPPER SIDING"
+   },
+   "CRP:": {
+      "FIELD2": "CORRUGATED PANEL"
+   },
+   "CRS:": {
+      "FIELD2": "CORRUGATED SIDING"
+   },
+   "CSH:": {
+      "FIELD2": "COMPOSITION SHINGLE"
+   },
+   "CSI:": {
+      "FIELD2": "COMPOSITION SIDING"
+   },
+   "CSP:": {
+      "FIELD2": "CORRUGATED STEEL PANEL"
+   },
+   "CSS:": {
+      "FIELD2": "COMPOSITION SIDING/STUCCO"
+   },
+   "CST:": {
+      "FIELD2": "CONCRETE STUCCO"
+   },
+   "CUS:": {
+      "FIELD2": "CUSTOM"
+   },
+   "CWL:": {
+      "FIELD2": "PORCELAIN/ENAMEL PANEL"
+   },
+   "EIF:": {
+      "FIELD2": "INSULATED FINISH/EIFS"
+   },
+   "FAB:": {
+      "FIELD2": "FRAME ALUMINUM/BRICK"
+   },
+   "FAV:": {
+      "FIELD2": "FRAME/ALUMINUM/VINYL"
+   },
+   "FBR:": {
+      "FIELD2": "FIBERBOARD"
+   },
+   "FCB:": {
+      "FIELD2": "FRAME CONCRETE BLOCK/BRICK"
+   },
+   "FCL:": {
+      "FIELD2": "FRAME CLAPBOARD"
+   },
+   "FHB:": {
+      "FIELD2": "FRAME HARDBOARD"
+   },
+   "FIB:": {
+      "FIELD2": "FIBERGLASS"
+   },
+   "FMM:": {
+      "FIELD2": "FRAME/MASONRY"
+   },
+   "FMV:": {
+      "FIELD2": "FRAME/MASONRY/VENEER"
+   },
+   "FPM:": {
+      "FIELD2": "FRAME/PERMASTONE"
+   },
+   "FPP:": {
+      "FIELD2": "FRAME/PLYWOOD"
+   },
+   "FRA:": {
+      "FIELD2": "FRAME"
+   },
+   "FRB:": {
+      "FIELD2": "FRAME BRICK"
+   },
+   "FRC:": {
+      "FIELD2": "FRAME COMPOSITION"
+   },
+   "FRE:": {
+      "FIELD2": "FRAME/SHINGLE"
+   },
+   "FRG:": {
+      "FIELD2": "FRAME/GLASS"
+   },
+   "FRM:": {
+      "FIELD2": "FRAME/METAL"
+   },
+   "FRS:": {
+      "FIELD2": "FRAME/STONE"
+   },
+   "FRV:": {
+      "FIELD2": "FRAME/VINYL"
+   },
+   "FRW:": {
+      "FIELD2": "FRAME/WOOD"
+   },
+   "FSB:": {
+      "FIELD2": "FRAME SHINGLE/BRICK"
+   },
+   "FSD:": {
+      "FIELD2": "FRAME SIDING"
+   },
+   "FSG:": {
+      "FIELD2": "FRAME/STEEL/SIDING"
+   },
+   "FSL:": {
+      "FIELD2": "FRAME-STUD/LATH/STUC/ASB SDG"
+   },
+   "FSM:": {
+      "FIELD2": "FRAME/STEEL/METAL"
+   },
+   "FSP:": {
+      "FIELD2": "FRAME/STEEL PANEL"
+   },
+   "FSS:": {
+      "FIELD2": "FRAME/SHINGLE SIDING"
+   },
+   "FST:": {
+      "FIELD2": "FRAME/STUCCO"
+   },
+   "FSV:": {
+      "FIELD2": "FRAME/STONE/VENEER"
+   },
+   "FSW:": {
+      "FIELD2": "FRAME/WOOD SHINGLE"
+   },
+   "FTS:": {
+      "FIELD2": "FRAME/STUCCO/SIDING"
+   },
+   "FTW:": {
+      "FIELD2": "FRAME/TILE/WOOD"
+   },
+   "FWB:": {
+      "FIELD2": "FRAME WOOD/BRICK"
+   },
+   "FWC:": {
+      "FIELD2": "FRAME WOOD/STUCCO"
+   },
+   "FWD:": {
+      "FIELD2": "FRAME WOOD"
+   },
+   "FWS:": {
+      "FIELD2": "FRAME/WOOD SIDING"
+   },
+   "GLA:": {
+      "FIELD2": "GLASS"
+   },
+   "GLB:": {
+      "FIELD2": "BRICK/GLASS"
+   },
+   "GLL:": {
+      "FIELD2": "ALUMINUM/GLASS"
+   },
+   "GLM:": {
+      "FIELD2": "GLASS/METAL"
+   },
+   "GLS:": {
+      "FIELD2": "GLASS/STEEL"
+   },
+   "GMA:": {
+      "FIELD2": "GLASS/MASONRY"
+   },
+   "GST:": {
+      "FIELD2": "GLASS/STONE"
+   },
+   "GUN:": {
+      "FIELD2": "GUNITE"
+   },
+   "GWD:": {
+      "FIELD2": "GLASS/WOOD"
+   },
+   "HAR:": {
+      "FIELD2": "HARDBOARD"
+   },
+   "HAY:": {
+      "FIELD2": "HAYDITE"
+   },
+   "HBP:": {
+      "FIELD2": "HARDBOARD/PLYWOOD"
+   },
+   "HBV:": {
+      "FIELD2": "HARDBOARD/VINYL"
+   },
+   "HRW:": {
+      "FIELD2": "HARDWOOD"
+   },
+   "IMI:": {
+      "FIELD2": "SYNTHETIC PANEL/SIDING"
+   },
+   "INC:": {
+      "FIELD2": "FIREPROOF/FIRE RETARDANT"
+   },
+   "IRN:": {
+      "FIELD2": "IRON POST/CORRUGATED IRON"
+   },
+   "LOG:": {
+      "FIELD2": "LOG"
+   },
+   "LPS:": {
+      "FIELD2": "LAP SIDING"
+   },
+   "LWS:": {
+      "FIELD2": "LOG/WOOD SHINGLE"
+   },
+   "MAR:": {
+      "FIELD2": "MARBLE"
+   },
+   "MAS:": {
+      "FIELD2": "MASONITE"
+   },
+   "MBS:": {
+      "FIELD2": "MARBLE/STONE"
+   },
+   "MEL:": {
+      "FIELD2": "METAL/STEEL"
+   },
+   "MET:": {
+      "FIELD2": "METAL"
+   },
+   "MIX:": {
+      "FIELD2": "MIXTURE"
+   },
+   "MLS:": {
+      "FIELD2": "METAL/STUCCO"
+   },
+   "MSC:": {
+      "FIELD2": "MASONITE/STUCCO"
+   },
+   "MSH:": {
+      "FIELD2": "MASONITE/SHEATHING"
+   },
+   "MSM:": {
+      "FIELD2": "MASONRY/METAL"
+   },
+   "MSN:": {
+      "FIELD2": "MASONRY"
+   },
+   "MSS:": {
+      "FIELD2": "MASONRY/STONE"
+   },
+   "MST:": {
+      "FIELD2": "MASONITE/STONE"
+   },
+   "MSV:": {
+      "FIELD2": "MASONITE/VINYL"
+   },
+   "MSW:": {
+      "FIELD2": "MASONITE/WOOD"
+   },
+   "MTP:": {
+      "FIELD2": "METAL PANEL"
+   },
+   "MTS:": {
+      "FIELD2": "METAL SIDING"
+   },
+   "MVN:": {
+      "FIELD2": "MASONRY VENEER"
+   },
+   "MVS:": {
+      "FIELD2": "METAL/STONE/VENEER"
+   },
+   "MWD:": {
+      "FIELD2": "METAL/WOOD"
+   },
+   "MWF:": {
+      "FIELD2": "METAL/WOOD FRAME"
+   },
+   "MYS:": {
+      "FIELD2": "MASONRY/STUCCO"
+   },
+   "MYW:": {
+      "FIELD2": "MASONRY/WOOD"
+   },
+   "OPE:": {
+      "FIELD2": "OPEN END"
+   },
+   "PAB:": {
+      "FIELD2": "POST & BOARD"
+   },
+   "PAN:": {
+      "FIELD2": "PANEL"
+   },
+   "PCP:": {
+      "FIELD2": "PRECAST CONCRETE PANEL"
+   },
+   "PCW:": {
+      "FIELD2": "PRECAST CURTAIN WALLS"
+   },
+   "PER:": {
+      "FIELD2": "PERMASTONE"
+   },
+   "PFM:": {
+      "FIELD2": "PREFAB METAL"
+   },
+   "PFW:": {
+      "FIELD2": "PREFAB WOOD"
+   },
+   "PLS:": {
+      "FIELD2": "PLASTER"
+   },
+   "PLY:": {
+      "FIELD2": "PLYWOOD"
+   },
+   "POR:": {
+      "FIELD2": "PORCELAIN/ENAMEL PANEL"
+   },
+   "PRB:": {
+      "FIELD2": "PRESSBOARD"
+   },
+   "PRC:": {
+      "FIELD2": "PRECAST CONCRETE"
+   },
+   "PRF:": {
+      "FIELD2": "PREFAB"
+   },
+   "PRP:": {
+      "FIELD2": "PREFAB PANEL"
+   },
+   "PST:": {
+      "FIELD2": "PANEL/STUCCO"
+   },
+   "PTP:": {
+      "FIELD2": "PRECAST TEXTURED PANEL"
+   },
+   "PWD:": {
+      "FIELD2": "PERMASTONE/WOOD"
+   },
+   "PWF:": {
+      "FIELD2": "PLYWOOD/WOOD FRAME"
+   },
+   "PWP:": {
+      "FIELD2": "PREFAB WOOD PANEL"
+   },
+   "RBW:": {
+      "FIELD2": "BRICK/CONCRETE BLOCK/WOOD"
+   },
+   "ROC:": {
+      "FIELD2": "ROCK/STONE"
+   },
+   "SBR:": {
+      "FIELD2": "SIMULATED BRICK, ROCK, STONE"
+   },
+   "SDS:": {
+      "FIELD2": "SIDING SHEATHING"
+   },
+   "SEW:": {
+      "FIELD2": "STEEL/WOOD"
+   },
+   "SFW:": {
+      "FIELD2": "STEEL FRAME/WOOD"
+   },
+   "SGL:": {
+      "FIELD2": "SOLAR GLASS"
+   },
+   "SGS:": {
+      "FIELD2": "SHINGLE SIDING"
+   },
+   "SGW:": {
+      "FIELD2": "SHINGLE/WOOD"
+   },
+   "SHB:": {
+      "FIELD2": "SHINGLE/BRICK"
+   },
+   "SHE:": {
+      "FIELD2": "SHEATHING"
+   },
+   "SHI:": {
+      "FIELD2": "SHINGLE"
+   },
+   "SHS:": {
+      "FIELD2": "SHEATHING/STUCCO"
+   },
+   "SHW:": {
+      "FIELD2": "SHEATHING/WOOD"
+   },
+   "SIN:": {
+      "FIELD2": "SINGLE"
+   },
+   "SLU:": {
+      "FIELD2": "SLUMP"
+   },
+   "SNS:": {
+      "FIELD2": "STONE/SIDING"
+   },
+   "SNW:": {
+      "FIELD2": "STONE/WOOD"
+   },
+   "SPR:": {
+      "FIELD2": "GUNITE/SPRAYCRETE"
+   },
+   "SSC:": {
+      "FIELD2": "STONE/STUCCO"
+   },
+   "SSD:": {
+      "FIELD2": "STONE/WOOD SIDING"
+   },
+   "SSF:": {
+      "FIELD2": "FRAME/STUCCO SHINGLE"
+   },
+   "SSG:": {
+      "FIELD2": "STAINLESS STEEL W/BRONZED GLAS"
+   },
+   "SSH:": {
+      "FIELD2": "SLATE"
+   },
+   "SSS:": {
+      "FIELD2": "SHINGLE/STUCCO"
+   },
+   "SST:": {
+      "FIELD2": "STEEL/STUCCO"
+   },
+   "SSW:": {
+      "FIELD2": "SHINGLE SIDING/WOOD FRAME"
+   },
+   "STE:": {
+      "FIELD2": "STEEL"
+   },
+   "STF:": {
+      "FIELD2": "STEEL FRAME"
+   },
+   "STM:": {
+      "FIELD2": "STUCCO/MASONRY"
+   },
+   "STO:": {
+      "FIELD2": "STONE"
+   },
+   "STP:": {
+      "FIELD2": "STEEL/PANEL"
+   },
+   "STT:": {
+      "FIELD2": "STUCCO/TILE"
+   },
+   "STU:": {
+      "FIELD2": "STUCCO"
+   },
+   "STV:": {
+      "FIELD2": "STONE VENEER"
+   },
+   "STW:": {
+      "FIELD2": "STUCCO/TILE/WOOD"
+   },
+   "STY:": {
+      "FIELD2": "STYROFOAM STUCCO"
+   },
+   "SUV:": {
+      "FIELD2": "STUCCO/VINYL"
+   },
+   "SVE:": {
+      "FIELD2": "STUCCO/VENEER"
+   },
+   "SVF:": {
+      "FIELD2": "STONE VENEER/WOOD FRAME"
+   },
+   "SVL:": {
+      "FIELD2": "STONE/VINYL"
+   },
+   "SVW:": {
+      "FIELD2": "STONE/VENEER/WOOD"
+   },
+   "SWD:": {
+      "FIELD2": "STUCCO/WOOD"
+   },
+   "SWF:": {
+      "FIELD2": "STUCCO/WOOD FRAME"
+   },
+   "SWS:": {
+      "FIELD2": "STONE/WOOD FRAME"
+   },
+   "TAP:": {
+      "FIELD2": "TAR PAPER"
+   },
+   "TIL:": {
+      "FIELD2": "TILE"
+   },
+   "TLU:": {
+      "FIELD2": "TILT-UP/CONCRETE"
+   },
+   "TUU:": {
+      "FIELD2": "TILT-UP"
+   },
+   "VIN:": {
+      "FIELD2": "VINYL"
+   },
+   "VIT:": {
+      "FIELD2": "VITROLITE"
+   },
+   "VNW:": {
+      "FIELD2": "VINYL/WOOD"
+   },
+   "WAF:": {
+      "FIELD2": "WAFERBOARD"
+   },
+   "WAS:": {
+      "FIELD2": "WOOD/ALUMINUM/COMPOSITION SHIN"
+   },
+   "WDA:": {
+      "FIELD2": "WOOD/ALUMINUM"
+   },
+   "WDF:": {
+      "FIELD2": "WOOD FRAME"
+   },
+   "WDH:": {
+      "FIELD2": "WOOD SIDING/SHINGLE"
+   },
+   "WDS:": {
+      "FIELD2": "WOOD SHEATHING"
+   },
+   "WDV:": {
+      "FIELD2": "WOOD VENEER"
+   },
+   "WFA:": {
+      "FIELD2": "WOOD FRAME/ASBESTOS"
+   },
+   "WFS:": {
+      "FIELD2": "WOOD FRAME/SIDING"
+   },
+   "WFV:": {
+      "FIELD2": "WOOD FRAME/VINYL"
+   },
+   "WFX:": {
+      "FIELD2": "WOOD FRAME(STUCCO OR ASBESTOS)"
+   },
+   "WLB:": {
+      "FIELD2": "WALLBOARD"
+   },
+   "WOO:": {
+      "FIELD2": "WOOD"
+   },
+   "WOS:": {
+      "FIELD2": "WOOD SIDING"
+   },
+   "WRB:": {
+      "FIELD2": "WEATHERBOARD"
+   },
+   "WSS:": {
+      "FIELD2": "WOOD SHAKE/SHINGLE"
+   },
+   "WWL:": {
+      "FIELD2": "WINDOW WALL"
+   },
+   "WWS:": {
+      "FIELD2": "WALLBOARD/WOOD SHINGLE"
+   },
+   "XXX:": {
+      "FIELD2": "CBS/HOLW TILE/FR/STUD/SHEAT/SD"
+   },
+   "FA0:": {
+      "FIELD2": "Forced Air"
+   },
+   "0U0:": {
+      "FIELD2": "0 Opening"
+   },
+   "0U1:": {
+      "FIELD2": "1 Opening"
+   },
+   "0U2:": {
+      "FIELD2": "2 Openings"
+   },
+   "0U3:": {
+      "FIELD2": "3 Openings"
+   },
+   "0U4:": {
+      "FIELD2": "4 Openings"
+   },
+   "0U5:": {
+      "FIELD2": "5 Openings"
+   },
+   "0U6:": {
+      "FIELD2": "6 Openings"
+   },
+   "0U7:": {
+      "FIELD2": "7 Openings"
+   },
+   "0U8:": {
+      "FIELD2": "8 Openings"
+   },
+   "0U9:": {
+      "FIELD2": "9 Openings"
+   },
+   "0UA:": {
+      "FIELD2": "10 Openings"
+   },
+   "0UB:": {
+      "FIELD2": "11 Openings"
+   },
+   "0UC:": {
+      "FIELD2": "12 Openings"
+   },
+   "0V0:": {
+      "FIELD2": "Massive"
+   },
+   "0V2:": {
+      "FIELD2": "Massive 2 Openings"
+   },
+   "0W0:": {
+      "FIELD2": "Wood Stove"
+   },
+   "0X0:": {
+      "FIELD2": "Stone, Brick, Marble"
+   },
+   "1:": {
+      "FIELD2": "1 Fireplace"
+   },
+   "100:": {
+      "FIELD2": "Plastic"
+   },
+   "1B0:": {
+      "FIELD2": "1 Story Brick"
+   },
+   "1F0:": {
+      "FIELD2": "1 Story Frame"
+   },
+   "1O0:": {
+      "FIELD2": "1 Story Stucco"
+   },
+   "1P0:": {
+      "FIELD2": "1 Story Prefab"
+   },
+   "1S0:": {
+      "FIELD2": "1 Story Stone"
+   },
+   "1U0:": {
+      "FIELD2": "1 Story"
+   },
+   "1U1:": {
+      "FIELD2": "1 Story 1 Opening"
+   },
+   "1U2:": {
+      "FIELD2": "1 Story 2 Openings"
+   },
+   "1UX:": {
+      "FIELD2": "1 Story Extra Opening"
+   },
+   "2:": {
+      "FIELD2": "2 Fireplaces"
+   },
+   "2B0:": {
+      "FIELD2": "2 Story Brick"
+   },
+   "2F0:": {
+      "FIELD2": "2 Story Frame"
+   },
+   "2O0:": {
+      "FIELD2": "2 Story Stucco"
+   },
+   "2P0:": {
+      "FIELD2": "2 Story Prefab"
+   },
+   "2S0:": {
+      "FIELD2": "2 Story Stone"
+   },
+   "2U0:": {
+      "FIELD2": "2 Story"
+   },
+   "2U1:": {
+      "FIELD2": "2 Story 1 Opening"
+   },
+   "2U2:": {
+      "FIELD2": "2 Story 2 Openings"
+   },
+   "2U3:": {
+      "FIELD2": "2 Story 3 Openings"
+   },
+   "2U4:": {
+      "FIELD2": "2 Story 4 Openings"
+   },
+   "2UX:": {
+      "FIELD2": "2 Story Extra Opening"
+   },
+   "3:": {
+      "FIELD2": "3 Fireplaces"
+   },
+   "3B0:": {
+      "FIELD2": "3 Story Brick"
+   },
+   "3F0:": {
+      "FIELD2": "3 Story Frame"
+   },
+   "3P0:": {
+      "FIELD2": "3 Story Prefab"
+   },
+   "3U1:": {
+      "FIELD2": "3 Story 1 Openings"
+   },
+   "3U2:": {
+      "FIELD2": "3 Story 2 Openings"
+   },
+   "3U3:": {
+      "FIELD2": "3 Story 3 Openings"
+   },
+   "3UX:": {
+      "FIELD2": "3 Story Extra Opening"
+   },
+   "4:": {
+      "FIELD2": "4 Fireplaces"
+   },
+   "5:": {
+      "FIELD2": "5 Fireplaces"
+   },
+   "6:": {
+      "FIELD2": "6 Fireplaces"
+   },
+   "7:": {
+      "FIELD2": "7 Fireplaces"
+   },
+   "8:": {
+      "FIELD2": "8 Fireplaces"
+   },
+   "9:": {
+      "FIELD2": "9 Fireplaces"
+   },
+   "AB0:": {
+      "FIELD2": "1.5 Story Brick"
+   },
+   "AO0:": {
+      "FIELD2": "1.5 Story Stucco"
+   },
+   "AP0:": {
+      "FIELD2": "1.5 Story Prefab"
+   },
+   "AS0:": {
+      "FIELD2": "1.5 Story Stone"
+   },
+   "AU0:": {
+      "FIELD2": "1.5 Story"
+   },
+   "DEFAULT:": {
+      "FIELD2": "Default"
+   },
+   "MSN:": {
+      "FIELD2": "Masonryk"
+   },
+   "STE:": {
+      "FIELD2": "Steel"
+   },
+   "STN:": {
+      "FIELD2": "Stone"
+   },
+   "BLK/WLL:": {
+      "FIELD2": "Block or Wall"
+   },
+   "BRK:": {
+      "FIELD2": "Brick"
+   },
+   "CNCSLB:": {
+      "FIELD2": "Concrete Slab"
+   },
+   "CNF:": {
+      "FIELD2": "Continuous Footing"
+   },
+   "CNW:": {
+      "FIELD2": "Continuous Wall"
+   },
+   "CRE:": {
+      "FIELD2": "Concrete"
+   },
+   "CNB:": {
+      "FIELD2": "Concrete Block"
+   },
+   "CONVNTL": {
+      "FIELD2": "Conventonal"
+   },
+   "CRB:": {
+      "FIELD2": "Concrete/Beam"
+   },
+   "CRS:": {
+      "FIELD2": "Cross Bridged/Walls"
+   },
+   "DRE or DIRT:": {
+      "FIELD2": "Dirt or Earth"
+   },
+   "DRE:": {
+      "FIELD2": "Dirt or Earth"
+   },
+   "DIRT:": {
+      "FIELD2": "Dirt or Earth"
+   },
+   "GDB:": {
+      "FIELD2": "Grade-Beam"
+   },
+   "MASONRY:": {
+      "FIELD2": "Masonry"
+   },
+   "MUD:": {
+      "FIELD2": "Mud Sill"
+   },
+   "000:": {
+      "FIELD2": "None"
+   },
+   "OTHER:": {
+      "FIELD2": "Other"
+   },
+   "PIR or PIER:": {
+      "FIELD2": "Pier or Pier"
+   },
+   "PIR:": {
+      "FIELD2": "Pier or Pier"
+   },
+   "PIER:": {
+      "FIELD2": "Pier or Pier"
+   },
+   "PIL or PILINGS:": {
+      "FIELD2": "Pillings"
+   },
+   "PIL:": {
+      "FIELD2": "Pillings"
+   },
+   "PILINGS:": {
+      "FIELD2": "Pillings"
+   },
+   "PPI or PIPE:": {
+      "FIELD2": "Pipe or Iron"
+   },
+   "PPI:": {
+      "FIELD2": "Pipe or Iron"
+   },
+   "PIPE:": {
+      "FIELD2": "Pipe or Iron"
+   },
+   "PRE or PREFAB:": {
+      "FIELD2": "Pre-Fabricated"
+   },
+   "PRE:": {
+      "FIELD2": "Pre-Fabricated"
+   },
+   "PREFAB:": {
+      "FIELD2": "Pre-Fabricated"
+   },
+   "RAS or RAISED:": {
+      "FIELD2": "Raised"
+   },
+   "RAS:": {
+      "FIELD2": "Raised"
+   },
+   "RAISED:": {
+      "FIELD2": "Raised"
+   },
+   "SLB:": {
+      "FIELD2": "Slab"
+   },
+   "SDF or SPRDFOOT:": {
+      "FIELD2": "Spread Footing"
+   },
+   "SDF:": {
+      "FIELD2": "Spread Footing"
+   },
+   "SPRDFOOT:": {
+      "FIELD2": "Spread Footing"
+   },
+   "STD:": {
+      "FIELD2": "Standard"
+   },
+   "STE or STEEL:": {
+      "FIELD2": "Steel"
+   },
+   "STE:": {
+      "FIELD2": "Steel"
+   },
+   "STEEL:": {
+      "FIELD2": "Steel"
+   },
+   "STM:": {
+      "FIELD2": "Stem Wall"
+   },
+   "STN or STONE:": {
+      "FIELD2": "Stone"
+   },
+   "STN:": {
+      "FIELD2": "Stone"
+   },
+   "STONE:": {
+      "FIELD2": "Stone"
+   },
+   "UBM:": {
+      "FIELD2": "Type Unknown With Basement"
+   },
+   "UCR:": {
+      "FIELD2": "Type Unknown With Crawspace"
+   },
+   "UPB:": {
+      "FIELD2": "Type Unknown With Part Basement"
+   },
+   "001:": {
+      "FIELD2": "Unknown"
+   },
+   "WOOD:": {
+      "FIELD2": "Wood, Grade-Beam, or Cross Bridged"
+   },
+   "null:": {
+       "FIELD2": "Information Not Available"
+   }
+}
         form.addEventListener("submit", function (event) {
             // stop form submission
             event.preventDefault();
@@ -74,7 +3115,7 @@
                 const address = document.getElementById('streetAddress').value;
                 const zip = document.getElementById('zip').value;
                 console.log('called');
-                const data = {
+                const bodyData = {
                     address: address,
                     zip: zip
                 }
@@ -83,18 +3124,18 @@
                     headers: {
                         'Access-Control-Allow-Origin':'*'
                     }, 
-                    body: JSON.stringify(data)
+                    body: JSON.stringify(bodyData)
                 })
                 .then(response => response.json())
                 .then(data => {
-                    const spinner = document.getElementById("spinner");
-                    spinner.hidden = true;
+                    const spinner1 = document.getElementById("spinner");
+                    spinner1.hidden = true;
                     if (data.errorCode != 429) {
                         const tab = document.getElementById("dataTable");
                         tab.removeAttribute('hidden');
-                        const maps = document.getElementById("maps");
-                        maps.removeAttribute('hidden');
-                        maps.addEventListener('click', () => {
+                        const maps1 = document.getElementById("maps");
+                        maps1.removeAttribute('hidden');
+                        maps1.addEventListener('click', () => {
                             window.open(`https://maps.google.com/?q=${data.siteLocation.data.coordinatesParcel.lat},${data.siteLocation.data.coordinatesParcel.lng}`, '_blank')
                         })
                         // console.log(data)
@@ -104,11 +3145,11 @@
                         document.getElementById('yearBuilt').innerHTML = `Year Built:  ${data.buildings.data.buildings[0].constructionDetails.effectiveYearBuilt}`
                         document.getElementById('totalFurArea').innerHTML = `Total Furnished Square Feet:  ${data.buildings.data.allBuildingsSummary.livingAreaSquareFeet} Sq.ft`
                         document.getElementById('clip').innerHTML = `Clip:  ${data.buildings.data.clip}`
-                        document.getElementById('fireplace').innerHTML = `Fireplace:  ${data.buildings.data.buildings[0].structureFeatures.firePlaces.typeCode}`
-                        document.getElementById('exteriorWallFin').innerHTML = `Exterior wall finish:  ${data.buildings.data.buildings[0].structureExterior.walls.typeCode}`
-                        document.getElementById('foundationType').innerHTML = `Foundation Type:  ${data.buildings.data.buildings[0].constructionDetails.foundationTypeCode}`
-                        document.getElementById('roofCover').innerHTML = `Roof Cover:  ${data.buildings.data.buildings[0].structureExterior.roof.coverTypeCode}`
-                        document.getElementById('heatingSystem').innerHTML = `Heating system:  ${data.buildings.data.buildings[0].structureFeatures.heating.typeCode}`
+                        document.getElementById('fireplace').innerHTML = `Fireplace:  ${mapping[`${data.buildings.data.buildings[0].structureFeatures.firePlaces.typeCode}:`].FIELD2}`
+                        document.getElementById('exteriorWallFin').innerHTML = `Exterior wall finish:  ${mapping[`${data.buildings.data.buildings[0].structureExterior.walls.typeCode}:`].FIELD2}`
+                        document.getElementById('foundationType').innerHTML = `Foundation Type:  ${mapping[`${data.buildings.data.buildings[0].constructionDetails.foundationTypeCode}:`].FIELD2}`
+                        document.getElementById('roofCover').innerHTML = `Roof Cover:  ${mapping[`${data.buildings.data.buildings[0].structureExterior.roof.coverTypeCode}:`].FIELD2}`
+                        document.getElementById('heatingSystem').innerHTML = `Heating system:  ${mapping[`${data.buildings.data.buildings[0].structureFeatures.heating.typeCode}:`].FIELD2}`
                         document.getElementById('numStories').innerHTML = `Number of stories:  ${data.buildings.data.buildings[0].structureVerticalProfile.storiesCount}`
                     } else {
                         document.getElementById('message').innerHTML = data.description;
