@@ -48,7 +48,7 @@
                 </tr>
             </table>
             <div style="text-align: center; margin-top: 20px;">
-                <button hidden id="maps">Search Location on Google Map</button>
+                <button hidden id="maps" onclick="openLocation()">Search Location on Google Map</button>
             </div>
         </div>
 </body>
@@ -57,6 +57,8 @@
 <script>
         const url = 'https://api-prod.corelogic.com/';
         const form = document.getElementById('pocForm');
+        let lat;
+        let lng;
         const mapping = {
    "ASMPTN:": {
       "FIELD2": "Assumption"
@@ -3133,11 +3135,6 @@
                     if (data.errorCode != 429) {
                         const tab = document.getElementById("dataTable");
                         tab.removeAttribute('hidden');
-                        const maps1 = document.getElementById("maps");
-                        maps1.removeAttribute('hidden');
-                        maps1.addEventListener('click', () => {
-                            window.open(`https://maps.google.com/?q=${data.siteLocation.data.coordinatesParcel.lat},${data.siteLocation.data.coordinatesParcel.lng}`, '_blank')
-                        })
                         // console.log('City', data.ownership.data.currentOwnerMailingInfo.mailingAddress.city)
                         // console.log('Latitude', data.siteLocation.data.coordinatesParcel.lat)
                         // console.log('Longitude', data.siteLocation.data.coordinatesParcel.lng)
@@ -3163,7 +3160,11 @@
                         document.getElementById('roofCover').innerHTML = `Roof Cover:  ${mapping[`${data.buildings.data.buildings[0].structureExterior.roof.coverTypeCode}:`]?.FIELD2}`
                         document.getElementById('heatingSystem').innerHTML = `Heating system:  ${mapping[`${data.buildings.data.buildings[0].structureFeatures.heating.typeCode}:`]?.FIELD2}`
                         document.getElementById('numStories').innerHTML = `Number of stories:  ${data.buildings.data.buildings[0].structureVerticalProfile.storiesCount}`
-                    } else {
+                        const maps1 = document.getElementById("maps");
+                        maps1.removeAttribute('hidden');
+                        lat  = data.siteLocation.data.coordinatesParcel.lat;
+                        lng = data.siteLocation.data.coordinatesParcel.lng;
+                     } else {
                         document.getElementById('message').innerHTML = data.description;
                     }
                 }
@@ -3172,6 +3173,9 @@
                     document.getElementById('message').innerHTML = e;
                 })
         }
-        });   
+        }); 
+        function openLocation() {
+         window.open(`https://maps.google.com/?q=${lat},${lng}`, '_blank')
+        }  
 </script>
 </html>
