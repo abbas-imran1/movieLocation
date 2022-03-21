@@ -3138,18 +3138,30 @@
                         maps1.addEventListener('click', () => {
                             window.open(`https://maps.google.com/?q=${data.siteLocation.data.coordinatesParcel.lat},${data.siteLocation.data.coordinatesParcel.lng}`, '_blank')
                         })
-                        // console.log(data)
+                        // console.log('City', data.ownership.data.currentOwnerMailingInfo.mailingAddress.city)
+                        // console.log('Latitude', data.siteLocation.data.coordinatesParcel.lat)
+                        // console.log('Longitude', data.siteLocation.data.coordinatesParcel.lng)
+                        // console.log('Year Built', data.buildings.data.buildings[0].constructionDetails.effectiveYearBuilt)
+                        // console.log('Total Furnished Square Fee', data.buildings.data.allBuildingsSummary.livingAreaSquareFeet)
+                        // console.log('Clip', data.buildings.data.clip)
+                        // console.log('Fireplace', mapping[`${data.buildings.data.buildings[0].structureFeatures.firePlaces.typeCode}:`].FIELD2)
+                        // console.log('Exterior wall finish', mapping[`${data.buildings.data.buildings[0].structureExterior.walls.typeCode}:`].FIELD2)
+                        // console.log('Foundation Type', mapping[`${data.buildings.data.buildings[0].constructionDetails.foundationTypeCode}:`].FIELD2)
+                        // console.log('Roof Cover', mapping[`${data.buildings.data.buildings[0].structureExterior.roof.coverTypeCode}:`]?.FIELD2)
+                        // console.log('Heating system', mapping[`${data.buildings.data.buildings[0].structureFeatures.heating.typeCode}:`].FIELD2)
+                        // console.log('Number of stories', data.buildings.data.buildings[0].structureVerticalProfile.storiesCount)
+                       
                         document.getElementById('city').innerHTML = `City:  ${data.ownership.data.currentOwnerMailingInfo.mailingAddress.city}`
                         document.getElementById('lat').innerHTML = `Latitude:  ${data.siteLocation.data.coordinatesParcel.lat}`
                         document.getElementById('lng').innerHTML = `Longitude:  ${data.siteLocation.data.coordinatesParcel.lng}`
                         document.getElementById('yearBuilt').innerHTML = `Year Built:  ${data.buildings.data.buildings[0].constructionDetails.effectiveYearBuilt}`
                         document.getElementById('totalFurArea').innerHTML = `Total Furnished Square Feet:  ${data.buildings.data.allBuildingsSummary.livingAreaSquareFeet} Sq.ft`
                         document.getElementById('clip').innerHTML = `Clip:  ${data.buildings.data.clip}`
-                        document.getElementById('fireplace').innerHTML = `Fireplace:  ${mapping[`${data.buildings.data.buildings[0].structureFeatures.firePlaces.typeCode}:`].FIELD2}`
-                        document.getElementById('exteriorWallFin').innerHTML = `Exterior wall finish:  ${mapping[`${data.buildings.data.buildings[0].structureExterior.walls.typeCode}:`].FIELD2}`
-                        document.getElementById('foundationType').innerHTML = `Foundation Type:  ${mapping[`${data.buildings.data.buildings[0].constructionDetails.foundationTypeCode}:`].FIELD2}`
-                        document.getElementById('roofCover').innerHTML = `Roof Cover:  ${mapping[`${data.buildings.data.buildings[0].structureExterior.roof.coverTypeCode}:`].FIELD2}`
-                        document.getElementById('heatingSystem').innerHTML = `Heating system:  ${mapping[`${data.buildings.data.buildings[0].structureFeatures.heating.typeCode}:`].FIELD2}`
+                        document.getElementById('fireplace').innerHTML = `Fireplace:  ${mapping[`${data.buildings.data.buildings[0].structureFeatures.firePlaces.typeCode}:`]?.FIELD2}`
+                        document.getElementById('exteriorWallFin').innerHTML = `Exterior wall finish:  ${mapping[`${data.buildings.data.buildings[0].structureExterior.walls.typeCode}:`]?.FIELD2}`
+                        document.getElementById('foundationType').innerHTML = `Foundation Type:  ${mapping[`${data.buildings.data.buildings[0].constructionDetails.foundationTypeCode}:`]?.FIELD2}`
+                        document.getElementById('roofCover').innerHTML = `Roof Cover:  ${mapping[`${data.buildings.data.buildings[0].structureExterior.roof.coverTypeCode}:`]?.FIELD2}`
+                        document.getElementById('heatingSystem').innerHTML = `Heating system:  ${mapping[`${data.buildings.data.buildings[0].structureFeatures.heating.typeCode}:`]?.FIELD2}`
                         document.getElementById('numStories').innerHTML = `Number of stories:  ${data.buildings.data.buildings[0].structureVerticalProfile.storiesCount}`
                     } else {
                         document.getElementById('message').innerHTML = data.description;
