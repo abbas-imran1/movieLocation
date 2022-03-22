@@ -20,6 +20,7 @@
         <div id="example" style="text-align: center;">Example:- 5300 WHITESBORO CT , 27540</div>
         <div id="message" style="text-align: center; color: red; margin-top: 10px; font-weight: bold;"></div>
         <div style="text-align: center;">
+            <div id="count" style="margin-bottom: 15px;"></div>
             <table hidden id="dataTable" border="1" 
             cellspacing="20" style="margin-left: auto; margin-right: auto; width: 50%;">
                 <tr>
@@ -3147,7 +3148,7 @@
                         // console.log('Roof Cover', mapping[`${data.buildings.data.buildings[0].structureExterior.roof.coverTypeCode}:`]?.FIELD2)
                         // console.log('Heating system', mapping[`${data.buildings.data.buildings[0].structureFeatures.heating.typeCode}:`].FIELD2)
                         // console.log('Number of stories', data.buildings.data.buildings[0].structureVerticalProfile.storiesCount)
-                       
+                        document.getElementById('count').innerHTML = `No. of API Calls today - ${data?.apiCount}/100`;
                         document.getElementById('city').innerHTML = `City:  ${data.ownership.data.currentOwnerMailingInfo.mailingAddress.city}`
                         document.getElementById('lat').innerHTML = `Latitude:  ${data.siteLocation.data.coordinatesParcel.lat}`
                         document.getElementById('lng').innerHTML = `Longitude:  ${data.siteLocation.data.coordinatesParcel.lng}`
